@@ -168,7 +168,7 @@ _DIALECT_LABELS = {
 }
 
 # Najdi – Central (Riyadh / Qassim)
-# Suffix "كس/هس/مس" on pronouns, confirmation "ايه", greeting "ابشر".
+# Suffix "هس/مس" on pronouns, confirmation "ايه", greeting "ابشر".
 _r_najdi_enc  = _re.compile(r"(?<=[كهم])س(?=\s|$|[،.؟!])")
 _r_najdi_lex  = _re.compile(r"\b(ابشر|ابشري|ايه(?!\s*والله)|شعليك|عساكم?|تسلمس?|شنو)\b")
 
@@ -478,10 +478,6 @@ def predict_dialect(req: TextRequest):
 
     Test examples — paste each into the Swagger UI:
 
-    نجدي:    {"text": "ابشر عساكس بخير، وينكس يا اخوي؟"}
-    جنوبي:   {"text": "كيفش وينش؟ شخبارش؟"}
-    شمالي:   {"text": "شبيكي وشخباركي هلا والله"}
-    شرقاوي:  {"text": "عاد وينت؟ كيفت يا ولد؟ إي والله"}
     """
     if not req.text.strip():
         raise HTTPException(status_code=400, detail="text field is empty")

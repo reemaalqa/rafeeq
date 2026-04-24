@@ -4,11 +4,6 @@ import 'dart:developer' as developer;
 /// transcribed speech, using weighted suffix and lexical pattern matching.
 ///
 /// Detection signal:
-///   نجدي   — pronoun suffix "كس/هس" + lexical markers (ابشر، ايه)
-///   جنوبي  — pronoun suffix "كش/هش" + markers (وينش، كيفش)
-///   شمالي  — greeting forms "شبيك/شخبارك", feminine "-كي" suffix
-///   شرقاوي — pronoun suffix "كت/هت" + markers (عاد، إي والله)
-///
 /// At least [_kMinSignal] weighted hits are required before the detector
 /// commits to any label — below that threshold it returns null so the
 /// caller keeps whatever dialect the user set manually.
@@ -22,7 +17,6 @@ class DialectDetector {
   static const double _kMinConfidence = 0.45;
 
   // ── Najdi: Central (Riyadh / Qassim) ─────────────────────────────────────
-  // Characteristic: "كس"/"هس"/"مس" pronoun enclitics (يعطيكس، معكس، عندهس),
   // confirmation "ايه", greeting "ابشر".
   static final _rNajdiEnclitic =
       RegExp(r'(?<=[كهم])س(?=\s|$|[،.؟!])');
