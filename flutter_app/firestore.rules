@@ -1,0 +1,40 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(uid) { return isSignedIn() && request.auth.uid == uid; }
+
+    // ── Public reference collections (read-only for signed-in users) ──────
+    match /medicalConditions/{doc}      { allow read: if isSignedIn(); allow write: if false; }
+    match /allergies/{doc}              { allow read: if isSignedIn(); allow write: if false; }
+    match /reminderCategories/{doc}     { allow read: if isSignedIn(); allow write: if false; }
+    match /foodItems/{doc}              { allow read: if isSignedIn(); allow write: if false; }
+    match /mealSuggestions/{doc}        { allow read: if isSignedIn(); allow write: if false; }
+    match /islamicContent/{doc}         { allow read: if isSignedIn(); allow write: if false; }
+    match /translations/{doc}           { allow read: if true;          allow write: if false; }
+    match /systemConfigs/{doc}          { allow read: if true;          allow write: if false; }
+    match /appVersions/{doc}            { allow read: if true;          allow write: if false; }
+
+    // ── Saved locations: system rows have userId == null, user rows owned ─
+    match /savedLocations/{doc} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    // ── User-scoped data ───────────────────────────────────────────────────
+    match /users/{uid} {
+      allow read, write: if isOwner(uid);
+
+      match /{sub=**} {
+        allow read, write: if isOwner(uid);
+      }
+    }
+
+    // ── OTP codes: server-only (Cloud Functions via Admin SDK) ────────────
+    match /otps/{doc} {
+      allow read, write: if false;
+    }
+  }
+}

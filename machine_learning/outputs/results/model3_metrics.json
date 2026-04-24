@@ -1,0 +1,193 @@
+{
+  "accuracy": 0.8145,
+  "macro_f1": 0.8235,
+  "macro_precision": 0.8447,
+  "macro_recall": 0.8179,
+  "per_class": {
+    "emergency": {
+      "f1": 0.7407,
+      "precision": 0.8,
+      "recall": 0.6897,
+      "support": 29
+    },
+    "prayer_time": {
+      "f1": 0.931,
+      "precision": 1.0,
+      "recall": 0.871,
+      "support": 31
+    },
+    "medication": {
+      "f1": 0.9057,
+      "precision": 0.96,
+      "recall": 0.8571,
+      "support": 28
+    },
+    "diet": {
+      "f1": 0.7317,
+      "precision": 0.6522,
+      "recall": 0.8333,
+      "support": 36
+    },
+    "reminders": {
+      "f1": 0.7302,
+      "precision": 0.8846,
+      "recall": 0.6216,
+      "support": 37
+    },
+    "quran": {
+      "f1": 0.7619,
+      "precision": 0.6531,
+      "recall": 0.9143,
+      "support": 35
+    },
+    "islamic_advice": {
+      "f1": 0.9643,
+      "precision": 0.9643,
+      "recall": 0.9643,
+      "support": 28
+    },
+    "locations": {
+      "f1": 0.8519,
+      "precision": 0.8846,
+      "recall": 0.8214,
+      "support": 28
+    },
+    "conversation": {
+      "f1": 0.8852,
+      "precision": 0.9643,
+      "recall": 0.8182,
+      "support": 33
+    },
+    "general": {
+      "f1": 0.7324,
+      "precision": 0.6842,
+      "recall": 0.7879,
+      "support": 33
+    }
+  },
+  "inference_time_ms": 6.0659,
+  "training_time_s": 283.51,
+  "confusion_matrix": [
+    [
+      20,
+      0,
+      0,
+      5,
+      0,
+      3,
+      0,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      27,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2
+    ],
+    [
+      0,
+      0,
+      24,
+      1,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      3,
+      0,
+      0,
+      30,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      4,
+      23,
+      4,
+      0,
+      2,
+      1,
+      2
+    ],
+    [
+      0,
+      0,
+      0,
+      1,
+      0,
+      32,
+      0,
+      0,
+      0,
+      2
+    ],
+    [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      27,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      23,
+      0,
+      4
+    ],
+    [
+      0,
+      0,
+      1,
+      3,
+      0,
+      1,
+      0,
+      0,
+      27,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      3,
+      2,
+      1,
+      1,
+      0,
+      26
+    ]
+  ],
+  "model_label": "BiLSTM"
+}

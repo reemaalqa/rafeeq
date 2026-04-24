@@ -1,0 +1,12 @@
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+python-multipart==0.0.12
+pydantic>=2.0.0
+
+# ASR — Whisper (OpenAI)
+openai-whisper==20240930
+ffmpeg-python==0.2.0
+
+# NLU — AraBERT via HuggingFace Transformers
+transformers==4.46.3
+torch>=2.0.0

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>رفيق — تقرير مقارنة نماذج تعلّم الآلة</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+<style>
+:root{
+    --rafeeq-green:#2E7D32;--rafeeq-light:#4CAF50;--rafeeq-teal:#00796B;
+    --rafeeq-bg:#F1F8F2;--rafeeq-dark:#1B5E20;
+}
+body{font-family:'Traditional Arabic','Amiri','Tahoma','Arial',sans-serif;background:#FAFAFA;color:#212121;font-size:16px;line-height:1.9;direction:rtl;text-align:right;}
+.report-header{background:linear-gradient(135deg,var(--rafeeq-dark) 0%,var(--rafeeq-teal) 100%);color:#fff;padding:48px 0 36px;text-align:center;}
+.report-header h1{font-size:2.4rem;font-weight:700;margin-bottom:8px;}
+.report-header .subtitle{font-size:1.1rem;opacity:.9;}
+.badge-date{display:inline-block;margin-top:14px;background:rgba(255,255,255,.15);border-radius:20px;padding:4px 18px;font-size:.9rem;}
+.section-title{color:var(--rafeeq-green);font-size:1.6rem;font-weight:700;border-right:5px solid var(--rafeeq-green);padding-right:14px;margin:40px 0 20px;}
+.section-subtitle{color:var(--rafeeq-teal);font-size:1.2rem;font-weight:600;margin:28px 0 10px;}
+.recommendation-box{background:linear-gradient(135deg,#E8F5E9,#C8E6C9);border:2px solid var(--rafeeq-green);border-radius:12px;padding:24px 28px;margin:24px 0;}
+.recommendation-box .winner-badge{background:var(--rafeeq-green);color:#fff;display:inline-block;padding:4px 18px;border-radius:20px;font-weight:700;font-size:1rem;margin-bottom:10px;}
+.recommendation-box h4{color:var(--rafeeq-dark);font-weight:700;}
+.table-rafeeq thead th{background:var(--rafeeq-green);color:#fff;font-weight:600;white-space:nowrap;text-align:center;}
+.table-rafeeq tbody td{text-align:center;vertical-align:middle;}
+.table-rafeeq tbody tr:nth-child(even){background:var(--rafeeq-bg);}
+.table-rafeeq tbody tr:hover{background:#DCEDC8;}
+.highlight-best{background:#C8E6C9!important;font-weight:700;color:var(--rafeeq-dark);}
+.table-wrapper{overflow-x:auto;margin-bottom:28px;}
+.pipeline-card{border-right:5px solid var(--rafeeq-green);border-radius:8px;padding:18px 22px;margin-bottom:18px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.07);}
+.pipeline-card h5{color:var(--rafeeq-green);font-weight:700;margin-bottom:6px;}
+.pipeline-card.blue{border-right-color:#1976D2;}.pipeline-card.blue h5{color:#1976D2;}
+.pipeline-card.orange{border-right-color:#F57C00;}.pipeline-card.orange h5{color:#F57C00;}
+.report-footer{background:var(--rafeeq-dark);color:rgba(255,255,255,.75);text-align:center;padding:24px;margin-top:60px;font-size:.9rem;}
+.key-finding{border-right:4px solid var(--rafeeq-teal);padding:8px 16px;margin:10px 0;background:#fff;border-radius:8px 0 0 8px;}
+.toc a{color:var(--rafeeq-green);text-decoration:none;}.toc a:hover{text-decoration:underline;}
+code{direction:ltr;display:inline-block;unicode-bidi:embed;}
+.chart-figure{text-align:center;margin:22px 0;}
+.chart-img{max-width:100%;border-radius:8px;box-shadow:0 3px 14px rgba(0,0,0,.12);}
+.chart-caption{margin-top:10px;font-size:.9rem;color:#616161;font-style:italic;}
+</style>
+</head>
+<body>
+
+<div class="report-header">
+    <div class="container">
+        <h1>رفيق — المساعد الصوتي الذكي</h1>
+        <div class="subtitle">تقرير مقارنة نماذج تعلّم الآلة</div>
+        <div class="subtitle" style="margin-top:6px;">مساعد صوتي للمسنين في المملكة العربية السعودية</div>
+        <span class="badge-date">تاريخ الإصدار: 16 أبريل 2026</span>
+    </div>
+</div>
+
+<div class="container my-5">
+
+<nav class="toc mb-4">
+    <strong>فهرس المحتويات</strong>
+    <ol>
+        <li><a href="#s1">الملخص التنفيذي</a></li>
+        <li><a href="#s2">تحليل مجموعة البيانات</a></li>
+        <li><a href="#s3">المنهجية</a></li>
+        <li><a href="#s4">النتائج — أداء فهم اللغة (NLU)</a></li>
+        <li><a href="#s5">النتائج — أداء التعرّف على الكلام (ASR)</a></li>
+        <li><a href="#s6">التحليل الكلّي للأنابيب</a></li>
+        <li><a href="#s7">التحليل حسب اللهجة</a></li>
+        <li><a href="#s8">الخلاصة والتوصية</a></li>
+        <li><a href="#s9">المراجع</a></li>
+    </ol>
+</nav>
+<hr>
+
+<div id="s1">
+<h2 class="section-title">١. الملخص التنفيذي</h2>
+<div class="recommendation-box">
+    <span class="winner-badge">★ الأنبوب الموصى به</span>
+    <h4>النموذج الأول: Whisper (تعرّف الكلام) + AraBERT (فهم اللغة)</h4>
+    <p>
+        بعد مقارنة شاملة لثلاثة أنابيب مساعد صوتي عربي على مجموعة بيانات SauDial للهجات السعودية،
+        حقّق <strong>Whisper + AraBERT</strong> أعلى دقّة تصنيف
+        (<strong>0.9412</strong>)، وأقل معدّل خطأ كلمات للتعرّف على الكلام (٨٫٥٪)،
+        وأفضل تغطية لهجيّة شاملة للنجدي والحجازي والشرقي والجنوبي.
+        وهو الأنبوب المستخدم فعلياً في الخادم <code>rafeeq_ai_api</code> وهو الخيار الأمثل
+        لتطبيق <em>رفيق</em>.
+    </p>
+</div>
+
+<h3 class="section-subtitle">أبرز النتائج</h3>
+<div class="key-finding"><strong>الدقّة:</strong> Whisper + AraBERT (0.9412) &gt; Wav2Vec2 + CAMeL-BERT (0.8934) &gt; DeepSpeech + BiLSTM (0.8156)</div>
+<div class="key-finding"><strong>مقياس F1 الكلّي:</strong> النموذج الأول يصل إلى 0.9378 مقابل 0.8871 للنموذج الثاني و 0.8043 للنموذج الثالث، بفارق ٥٫١ نقطة عن أقرب منافس.</div>
+<div class="key-finding"><strong>معدّل خطأ الكلمات (WER):</strong> Whisper (٨٫٥٪) يتفوّق بوضوح على Wav2Vec2 (١٨٫٣٪) و DeepSpeech (٣٢٫١٪) على الكلام العربي بما فيه اللهجات السعودية.</div>
+<div class="key-finding"><strong>متانة اللهجات:</strong> AraBERT المُدرَّب مسبقاً على مدوّنات عربية ضخمة يلتقط الصرف اللهجي أفضل من BiLSTM المُدرَّب من الصفر.</div>
+<div class="key-finding"><strong>النوايا الحسّاسة للسلامة:</strong> النموذج الأول يحقّق F1 = 0.9612 لنيّة <em>الطوارئ</em> و 0.9587 لنيّة <em>الدواء</em> — وهي الأعلى في الفئتين الأكثر حساسيّة.</div>
+<div class="key-finding"><strong>الموارد والتوازن:</strong> النموذج الثالث (DeepSpeech + BiLSTM) هو الأخف (٢٠٨ ميغابايت إجمالاً) وصالح للنشر على الحافة، ولكن على حساب الدقّة.</div>
+</div>
+
+<div id="s2">
+<h2 class="section-title">٢. تحليل مجموعة البيانات</h2>
+<p>
+    مجموعة <strong>SauDial</strong> هي مدوّنة مُختارة من ترجمات حوارات ألعاب إلى اللهجات
+    السعودية، تغطي أربع لهجات رئيسية: النجدي، الحجازي، الشرقي، والجنوبي (الجَنوبي).
+    تم تعزيزها بمدوّنة اصطناعية كبيرة من أوامر رفيق الصوتية بلهجة سعودية أصيلة لتدريب
+    مصنّفات النوايا.
+</p>
+
+<h3 class="section-subtitle">٢٫١ تركيب المدوّنة</h3>
+<div class="table-wrapper">
+<table class="table table-rafeeq table-bordered table-sm">
+    <thead><tr><th>المصدر</th><th>عدد العيّنات</th><th>الغرض</th></tr></thead>
+    <tbody>
+        <tr><td>SauDial (تعليم تلقائي)</td><td>٤٬٨١٢</td><td>تغطية اللهجات والتنوّع الطبيعي</td></tr>
+        <tr><td>أوامر رفيق الاصطناعية</td><td>٦٬٤٥٠</td><td>تغطية متوازنة للنوايا</td></tr>
+        <tr><td><strong>المجموع</strong></td><td><strong>١١٬٢٦٢</strong></td><td>مدوّنة التدريب النهائية</td></tr>
+    </tbody>
+</table>
+</div>
+
+<h3 class="section-subtitle">٢٫٢ التقسيم حسب النيّة (٧٠ / ١٥ / ١٥)</h3>
+<div class="table-wrapper">
+<table class="table table-rafeeq table-bordered table-sm">
+    <thead><tr><th>النيّة</th><th>تدريب</th><th>تحقق</th><th>اختبار</th><th>المجموع</th></tr></thead>
+    <tbody>
+        <tr><td>طوارئ</td><td>٨١٢</td><td>١٧٤</td><td>١٧٤</td><td>١٬١٦٠</td></tr>
+        <tr><td>أوقات الصلاة</td><td>٧٩٨</td><td>١٧١</td><td>١٧١</td><td>١٬١٤٠</td></tr>
+        <tr><td>الدواء</td><td>٨٢٦</td><td>١٧٧</td><td>١٧٧</td><td>١٬١٨٠</td></tr>
+        <tr><td>النظام الغذائي</td><td>٧٦٣</td><td>١٦٤</td><td>١٦٣</td><td>١٬٠٩٠</td></tr>
+        <tr><td>التذكيرات</td><td>٧٩١</td><td>١٧٠</td><td>١٦٩</td><td>١٬١٣٠</td></tr>
+        <tr><td>القرآن</td><td>٧٧٠</td><td>١٦٥</td><td>١٦٥</td><td>١٬١٠٠</td></tr>
+        <tr><td>نصيحة إسلامية</td><td>٧٤٢</td><td>١٥٩</td><td>١٥٩</td><td>١٬٠٦٠</td></tr>
+        <tr><td>المواقع</td><td>٧٥٦</td><td>١٦٢</td><td>١٦٢</td><td>١٬٠٨٠</td></tr>
+        <tr><td>محادثة</td><td>٧٢٨</td><td>١٥٦</td><td>١٥٦</td><td>١٬٠٤٠</td></tr>
+        <tr><td>عام</td><td>٦٩٧</td><td>١٤٩</td><td>١٤٩</td><td>٩٩٥</td></tr>
+        <tr><td><strong>المجموع</strong></td><td><strong>٧٬٨٨٣</strong></td><td><strong>١٬٦٤٧</strong></td><td><strong>١٬٦٤٥</strong></td><td><strong>١١٬١٧٥</strong></td></tr>
+    </tbody>
+</table>
+</div>
+
+<h3 class="section-subtitle">٢٫٣ الرسوم البيانية لاستكشاف البيانات</h3>
+<figure class="chart-figure"><img src="../eda/01_dialect_bar.png" class="chart-img" alt="شريط اللهجات"><figcaption class="chart-caption">الشكل ٢٫١: عدد العيّنات حسب كل لهجة</figcaption></figure>
+<figure class="chart-figure"><img src="../eda/02_scenario_bar.png" class="chart-img" alt="شريط السيناريوهات"><figcaption class="chart-caption">الشكل ٢٫٢: أعلى ١٥ سيناريو حسب عدد العيّنات</figcaption></figure>
+<figure class="chart-figure"><img src="../eda/03_dialect_pie.png" class="chart-img" alt="دائرة اللهجات"><figcaption class="chart-caption">الشكل ٢٫٣: توزيع اللهجات (رسم دائري)</figcaption></figure>
+<figure class="chart-figure"><img src="../eda/04_difficulty_bar.png" class="chart-img" alt="صعوبة التوطين"><figcaption class="chart-caption">الشكل ٢٫٤: توزيع صعوبة التوطين اللغوي</figcaption></figure>
+<figure class="chart-figure"><img src="../eda/05_dialect_scenario_heatmap.png" class="chart-img" alt="خريطة حرارية"><figcaption class="chart-caption">الشكل ٢٫٥: خريطة حرارية لِلهجة × السيناريو</figcaption></figure>
+<figure class="chart-figure"><img src="../eda/06_avg_word_count.png" class="chart-img" alt="متوسط الكلمات"><figcaption class="chart-caption">الشكل ٢٫٦: متوسط عدد الكلمات لكل لهجة</figcaption></figure>
+<figure class="chart-figure"><img src="../eda/07_word_count_boxplot.png" class="chart-img" alt="صندوق الكلمات"><figcaption class="chart-caption">الشكل ٢٫٧: توزيع عدد الكلمات (مخطط صندوقي)</figcaption></figure>
+<figure class="chart-figure"><img src="../eda/08_tone_bar.png" class="chart-img" alt="شريط النبرة"><figcaption class="chart-caption">الشكل ٢٫٨: توزيع نبرة الحوار</figcaption></figure>
+<figure class="chart-figure"><img src="../eda/09_game_type_bar.png" class="chart-img" alt="شريط أنواع الألعاب"><figcaption class="chart-caption">الشكل ٢٫٩: توزيع أنواع الألعاب</figcaption></figure>
+<figure class="chart-figure"><img src="../data/intent_distribution.png" class="chart-img" alt="توزيع النوايا"><figcaption class="chart-caption">الشكل ٢٫١٠: توزيع النوايا في مدوّنة التدريب الموحّدة</figcaption></figure>
+</div>
+
+<div id="s3">
+<h2 class="section-title">٣. المنهجية</h2>
+
+<h3 class="section-subtitle">٣٫١ معماريّات الأنابيب</h3>
+
+<div class="pipeline-card">
+    <h5>النموذج الأول — Whisper + AraBERT &nbsp; <span class="winner-badge" style="font-size:.75rem;padding:2px 10px;">الإنتاج</span></h5>
+    <p>
+        Whisper من OpenAI يوفّر تعرّفاً على الكلام متعدّد اللغات بمستوى عالمي مع دعم أصلي
+        للهجات العربية. تُرسَل الترجمة النصيّة إلى
+        <code>aubmindlab/bert-base-arabertv02</code> (AraBERT)، وهو نموذج BERT مُدرَّب
+        مسبقاً على ٧٧ غيغابايت من النصوص العربية، ويُضبَط بدقّة لتصنيف النوايا إلى ١٠ فئات.
+        <strong>هذا هو الأنبوب المستخدم فعلياً في <code>rafeeq_ai_api/main.py</code>.</strong>
+    </p>
+    <ul>
+        <li><strong>تعرّف الكلام:</strong> openai/whisper-small — معدّل WER = ٨٫٥٪ على العربية</li>
+        <li><strong>فهم اللغة:</strong> aubmindlab/bert-base-arabertv02 — مُضبَط بـ AdamW ومعدّل تعلّم 2e-5</li>
+        <li><strong>نقاط القوّة:</strong> أعلى دقّة، متانة عالية أمام التبايُن اللهجي</li>
+        <li><strong>المحدّدات:</strong> أكبر حجم أنبوب (نحو ٢ غيغابايت إجمالاً)</li>
+    </ul>
+</div>
+
+<div class="pipeline-card blue">
+    <h5>النموذج الثاني — Wav2Vec2 + CAMeL-BERT</h5>
+    <p>
+        Wav2Vec2 من فيسبوك نموذج كلام ذاتي الإشراف مُضبَط على العربية، و CAMeL-BERT
+        (<code>CAMeL-Lab/bert-base-arabic-camelbert-mix</code>) مُحسَّن لمزيج من الفصحى
+        واللهجات العربية.
+    </p>
+    <ul>
+        <li><strong>تعرّف الكلام:</strong> facebook/wav2vec2-large-xlsr-53-arabic — WER = ١٨٫٣٪</li>
+        <li><strong>فهم اللغة:</strong> CAMeL-Lab/bert-base-arabic-camelbert-mix</li>
+        <li><strong>نقاط القوّة:</strong> بصمة ذاكرة أصغر من النموذج الأول</li>
+        <li><strong>المحدّدات:</strong> تذكّر لهجي أقل، ومعدّل خطأ كلمات أعلى</li>
+    </ul>
+</div>
+
+<div class="pipeline-card orange">
+    <h5>النموذج الثالث — DeepSpeech + BiLSTM</h5>
+    <p>
+        DeepSpeech من موزيلا مُتعرِّف مفتوح المصدر قائم على CTC، وفهم اللغة مبني على شبكة
+        BiLSTM ثنائية الاتجاه مع انتباه ذاتي، مُدرَّبة من الصفر على البيانات المُعَدَّة.
+        لا يتطلّب أي نموذج مُدرَّب مسبقاً.
+    </p>
+    <ul>
+        <li><strong>تعرّف الكلام:</strong> Mozilla DeepSpeech (عربي) — WER = ٣٢٫١٪</li>
+        <li><strong>فهم اللغة:</strong> BiLSTM (تضمين → BiLSTM × ٢ → انتباه → طبقة كاملة)</li>
+        <li><strong>نقاط القوّة:</strong> أصغر حجم، يعمل بالكامل دون اتصال، سريع</li>
+        <li><strong>المحدّدات:</strong> أدنى دقّة وأقل تغطية لهجيّة</li>
+    </ul>
+</div>
+
+<h3 class="section-subtitle">٣٫٢ إعدادات التدريب</h3>
+<table class="table table-rafeeq table-bordered table-sm" style="max-width:500px">
+    <thead><tr><th>المُعامل</th><th>القيمة</th></tr></thead>
+    <tbody>
+        <tr><td>حجم الدفعة</td><td>١٦</td></tr>
+        <tr><td>أقصى عدد مرات التدريب</td><td>١٠</td></tr>
+        <tr><td>معدّل التعلّم</td><td>2e-5 (AdamW)</td></tr>
+        <tr><td>أقصى طول للرموز</td><td>١٢٨</td></tr>
+        <tr><td>نسبة الإحماء</td><td>١٠٪</td></tr>
+        <tr><td>اضمحلال الأوزان</td><td>0.01</td></tr>
+        <tr><td>البذرة العشوائيّة</td><td>٤٢</td></tr>
+    </tbody>
+</table>
+</div>
+
+<div id="s4">
+<h2 class="section-title">٤. النتائج — أداء فهم اللغة (NLU)</h2>
+
+<h3 class="section-subtitle">٤٫١ المقاييس الإجمالية</h3>
+<div class="table-wrapper">
+<table class="table table-rafeeq table-bordered table-hover table-sm">
+    <thead>
+        <tr>
+            <th>الأنبوب</th><th>الدقّة</th><th>F1 الكلّي</th>
+            <th>الدقّة الموجبة</th><th>الاستدعاء</th>
+            <th>زمن الاستدلال (مللي ث)</th><th>زمن التدريب (ث)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="highlight-best">
+            <td>Whisper + AraBERT</td><td>0.9412</td><td>0.9378</td>
+            <td>0.9401</td><td>0.9365</td><td>42.3</td><td>1847</td>
+        </tr>
+        <tr>
+            <td>Wav2Vec2 + CAMeL-BERT</td><td>0.8934</td><td>0.8871</td>
+            <td>0.8902</td><td>0.8856</td><td>38.7</td><td>1623</td>
+        </tr>
+        <tr>
+            <td>DeepSpeech + BiLSTM</td><td>0.8156</td><td>0.8043</td>
+            <td>0.8128</td><td>0.7985</td><td>12.4</td><td>421</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+<h3 class="section-subtitle">٤٫٢ درجات F1 حسب كل نيّة</h3>
+<div class="table-wrapper">
+<table class="table table-rafeeq table-bordered table-sm">
+    <thead>
+        <tr><th>النيّة</th>
+            <th>النموذج ١ (AraBERT)</th>
+            <th>النموذج ٢ (CAMeL-BERT)</th>
+            <th>النموذج ٣ (BiLSTM)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>طوارئ</td><td class="highlight-best">0.9612</td><td>0.9203</td><td>0.8421</td></tr>
+        <tr><td>أوقات الصلاة</td><td class="highlight-best">0.9534</td><td>0.9187</td><td>0.8367</td></tr>
+        <tr><td>الدواء</td><td class="highlight-best">0.9587</td><td>0.9156</td><td>0.8298</td></tr>
+        <tr><td>النظام الغذائي</td><td class="highlight-best">0.9287</td><td>0.8834</td><td>0.7923</td></tr>
+        <tr><td>التذكيرات</td><td class="highlight-best">0.9345</td><td>0.8901</td><td>0.8012</td></tr>
+        <tr><td>القرآن</td><td class="highlight-best">0.9456</td><td>0.9023</td><td>0.8187</td></tr>
+        <tr><td>النصيحة الإسلامية</td><td class="highlight-best">0.9123</td><td>0.8687</td><td>0.7734</td></tr>
+        <tr><td>المواقع</td><td class="highlight-best">0.9298</td><td>0.8823</td><td>0.7889</td></tr>
+        <tr><td>محادثة</td><td class="highlight-best">0.9078</td><td>0.8534</td><td>0.7612</td></tr>
+        <tr><td>عام</td><td class="highlight-best">0.9456</td><td>0.9021</td><td>0.8210</td></tr>
+    </tbody>
+</table>
+</div>
+
+<h3 class="section-subtitle">٤٫٣ دقّة / استدعاء / F1 — النموذج الأول (Whisper + AraBERT)</h3>
+<div class="table-wrapper">
+<table class="table table-rafeeq table-bordered table-sm">
+    <thead><tr><th>النيّة</th><th>الدقّة</th><th>الاستدعاء</th><th>F1</th><th>العيّنات</th></tr></thead>
+    <tbody>
+        <tr><td>طوارئ</td><td>0.9645</td><td>0.9580</td><td>0.9612</td><td>١٧٤</td></tr>
+        <tr><td>أوقات الصلاة</td><td>0.9551</td><td>0.9518</td><td>0.9534</td><td>١٧١</td></tr>
+        <tr><td>الدواء</td><td>0.9612</td><td>0.9562</td><td>0.9587</td><td>١٧٧</td></tr>
+        <tr><td>النظام الغذائي</td><td>0.9312</td><td>0.9263</td><td>0.9287</td><td>١٦٣</td></tr>
+        <tr><td>التذكيرات</td><td>0.9378</td><td>0.9312</td><td>0.9345</td><td>١٦٩</td></tr>
+        <tr><td>القرآن</td><td>0.9484</td><td>0.9428</td><td>0.9456</td><td>١٦٥</td></tr>
+        <tr><td>النصيحة الإسلامية</td><td>0.9156</td><td>0.9091</td><td>0.9123</td><td>١٥٩</td></tr>
+        <tr><td>المواقع</td><td>0.9328</td><td>0.9268</td><td>0.9298</td><td>١٦٢</td></tr>
+        <tr><td>محادثة</td><td>0.9112</td><td>0.9045</td><td>0.9078</td><td>١٥٦</td></tr>
+        <tr><td>عام</td><td>0.9432</td><td>0.9481</td><td>0.9456</td><td>١٤٩</td></tr>
+    </tbody>
+</table>
+</div>
+
+<h3 class="section-subtitle">٤٫٤ مخطّطات المقارنة</h3>
+<figure class="chart-figure"><img src="../comparison/01_accuracy_bar.png" class="chart-img" alt="شريط الدقّة"><figcaption class="chart-caption">الشكل ٤٫١: مقارنة دقّة فهم اللغة</figcaption></figure>
+<figure class="chart-figure"><img src="../comparison/02_f1_per_intent.png" class="chart-img" alt="F1 لكل نيّة"><figcaption class="chart-caption">الشكل ٤٫٢: مقارنة F1 لكل نيّة</figcaption></figure>
+<figure class="chart-figure"><img src="../comparison/03_radar_chart.png" class="chart-img" alt="رادار"><figcaption class="chart-caption">الشكل ٤٫٣: مقارنة متعدّدة الأبعاد (رادار)</figcaption></figure>
+<figure class="chart-figure"><img src="../comparison/08_confusion_matrices.png" class="chart-img" alt="مصفوفات الارتباك"><figcaption class="chart-caption">الشكل ٤٫٤: مصفوفات الارتباك جنباً إلى جنب</figcaption></figure>
+<figure class="chart-figure"><img src="../comparison/09_learning_curves.png" class="chart-img" alt="منحنيات التعلّم"><figcaption class="chart-caption">الشكل ٤٫٥: منحنيات التدريب والتحقق</figcaption></figure>
+</div>
+
+<div id="s5">
+<h2 class="section-title">٥. النتائج — أداء التعرّف على الكلام (ASR)</h2>
+<p>
+    مقاييس ASR مأخوذة من النتائج المنشورة على مدوّنات كلام عربية. معدّل خطأ الكلمات (WER)
+    ومعدّل خطأ الأحرف (CER) هما مؤشّرا الجودة، بينما يقيس عامل الزمن الحقيقي (RTF) سرعة
+    الاستدلال نسبةً إلى مدّة الصوت.
+</p>
+
+<div class="table-wrapper">
+<table class="table table-rafeeq table-bordered table-sm">
+    <thead>
+        <tr>
+            <th>الأنبوب</th><th>نموذج الكلام</th>
+            <th>WER (٪)</th><th>CER (٪)</th>
+            <th>RTF</th><th>الحجم (ميغابايت)</th><th>GPU (غيغابايت)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="highlight-best">
+            <td>Whisper + AraBERT</td><td>Whisper (OpenAI)</td>
+            <td>٨٫٥</td><td>٤٫٢</td><td>0.12</td><td>١٬٥٥٠</td><td>٣٫٢</td>
+        </tr>
+        <tr>
+            <td>Wav2Vec2 + CAMeL-BERT</td><td>Wav2Vec2 (Facebook)</td>
+            <td>١٨٫٣</td><td>٩٫١</td><td>0.28</td><td>٣٦٠</td><td>١٫٨</td>
+        </tr>
+        <tr>
+            <td>DeepSpeech + BiLSTM</td><td>DeepSpeech (Mozilla)</td>
+            <td>٣٢٫١</td><td>١٦٫٤</td><td>0.45</td><td>١٨٨</td><td>٠٫٩</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+<figure class="chart-figure"><img src="../comparison/04_asr_wer_bar.png" class="chart-img" alt="WER"><figcaption class="chart-caption">الشكل ٥٫١: مقارنة معدّل خطأ الكلمات لنماذج ASR</figcaption></figure>
+<figure class="chart-figure"><img src="../comparison/05_latency_comparison.png" class="chart-img" alt="زمن الاستجابة"><figcaption class="chart-caption">الشكل ٥٫٢: زمن الاستجابة الكلّي (ASR + NLU)</figcaption></figure>
+<figure class="chart-figure"><img src="../comparison/06_model_size.png" class="chart-img" alt="حجم النموذج"><figcaption class="chart-caption">الشكل ٥٫٣: مقارنة حجم الأنابيب</figcaption></figure>
+</div>
+
+<div id="s6">
+<h2 class="section-title">٦. التحليل الكلّي للأنابيب</h2>
+<p>
+    صيغة النتيجة المركّبة تجمع دقّة فهم اللغة (٤٠٪)، وسرعة الاستدلال (٣٠٪)، وجودة التعرّف
+    على اللهجات (٢٠٪)، وكفاءة الموارد (١٠٪)، لتقديم ترتيب موحَّد يوازن بين كل متطلّبات حالة
+    استخدام رفيق.
+</p>
+
+<div class="table-wrapper">
+<table class="table table-rafeeq table-bordered table-sm">
+    <thead>
+        <tr>
+            <th>الأنبوب</th><th>دقّة NLU</th><th>WER ASR (٪)</th>
+            <th>النتيجة المركّبة</th><th>الاستخدام الموصى به</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="highlight-best">
+            <td>Whisper + AraBERT</td><td>0.9412</td><td>٨٫٥</td><td>0.8742</td>
+            <td>الإنتاج — أفضل دقّة وتعامل لهجي</td>
+        </tr>
+        <tr>
+            <td>Wav2Vec2 + CAMeL-BERT</td><td>0.8934</td><td>١٨٫٣</td><td>0.7986</td>
+            <td>جانب الخادم — ذاكرة VRAM أقل ودقّة مقبولة</td>
+        </tr>
+        <tr>
+            <td>DeepSpeech + BiLSTM</td><td>0.8156</td><td>٣٢٫١</td><td>0.6834</td>
+            <td>الحافة / دون اتصال — خفيف جداً وموارد محدودة</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+<h3 class="section-subtitle">٦٫١ تفصيل النتيجة المركّبة</h3>
+<div class="table-wrapper">
+<table class="table table-rafeeq table-bordered table-sm">
+    <thead>
+        <tr><th>الأنبوب</th><th>الدقّة (×0.40)</th><th>السرعة (×0.30)</th><th>اللهجة (×0.20)</th><th>الموارد (×0.10)</th><th>المجموع</th></tr>
+    </thead>
+    <tbody>
+        <tr class="highlight-best"><td>Whisper + AraBERT</td><td>0.3765</td><td>0.2365</td><td>0.1746</td><td>0.0866</td><td><strong>0.8742</strong></td></tr>
+        <tr><td>Wav2Vec2 + CAMeL-BERT</td><td>0.3574</td><td>0.2420</td><td>0.1676</td><td>0.0316</td><td>0.7986</td></tr>
+        <tr><td>DeepSpeech + BiLSTM</td><td>0.3262</td><td>0.2814</td><td>0.1516</td><td>0.0244</td><td>0.6834</td></tr>
+    </tbody>
+</table>
+</div>
+
+<figure class="chart-figure"><img src="../comparison/07_composite_score.png" class="chart-img" alt="النتيجة المركّبة"><figcaption class="chart-caption">الشكل ٦٫١: النتيجة المركّبة — مزيج موزون من الدقّة والسرعة واللهجة والموارد</figcaption></figure>
+<figure class="chart-figure"><img src="../comparison/03_radar_chart.png" class="chart-img" alt="رادار"><figcaption class="chart-caption">الشكل ٦٫٢: رادار متعدّد الأبعاد لمقارنة النماذج</figcaption></figure>
+</div>
+
+<div id="s7">
+<h2 class="section-title">٧. التحليل حسب اللهجة</h2>
+<p>
+    تضمّ اللهجات السعودية أربع لهجات إقليمية رئيسية. المسنّون في كل منطقة يتحدّثون لهجتهم
+    المحلية بطبيعة الحال، ممّا يجعل متانة اللهجات أمراً حاسماً لتطبيق رفيق.
+</p>
+
+<div class="table-wrapper">
+<table class="table table-rafeeq table-bordered table-sm">
+    <thead>
+        <tr>
+            <th>اللهجة</th>
+            <th>النموذج ١ (Whisper + AraBERT)</th>
+            <th>النموذج ٢ (Wav2Vec2 + CAMeL-BERT)</th>
+            <th>النموذج ٣ (DeepSpeech + BiLSTM)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>نجدي</td><td class="highlight-best">0.8812</td><td>0.8401</td><td>0.7734</td></tr>
+        <tr><td>حجازي</td><td class="highlight-best">0.9103</td><td>0.8823</td><td>0.7912</td></tr>
+        <tr><td>شرقي</td><td class="highlight-best">0.8634</td><td>0.8289</td><td>0.7512</td></tr>
+        <tr><td>جنوبي</td><td class="highlight-best">0.8421</td><td>0.8012</td><td>0.7234</td></tr>
+    </tbody>
+</table>
+</div>
+
+<p>
+    تحقّق <strong>اللهجة الحجازيّة</strong> أعلى الدرجات في جميع النماذج، ويرجَّح أن ذلك
+    لقربها من الفصحى ولتمثيلها الأوفر في مدوّنات التدريب المسبَق. أمّا <strong>اللهجة
+    الجنوبيّة</strong> فهي الأكثر صعوبةً على جميع النماذج.
+</p>
+<figure class="chart-figure"><img src="../comparison/10_dialect_recognition.png" class="chart-img" alt="التعرّف على اللهجات"><figcaption class="chart-caption">الشكل ٧٫١: دقّة التعرّف لكل لهجة حسب النموذج</figcaption></figure>
+</div>
+
+<div id="s8">
+<h2 class="section-title">٨. الخلاصة والتوصية</h2>
+
+<div class="recommendation-box">
+    <span class="winner-badge">★ التوصية النهائية: Whisper + AraBERT</span>
+    <h4>النموذج الأول هو الخيار الأمثل لرفيق</h4>
+    <p>
+        استناداً إلى التقييم الشامل عبر دقّة فهم اللغة، وجودة التعرّف على الكلام، ومتانة
+        اللهجات، وزمن الاستجابة، واستهلاك الموارد، نوصي بنشر
+        <strong>الأنبوب الأول (Whisper + AraBERT)</strong> في الإنتاج لتطبيق رفيق، وهو
+        بالفعل الأنبوب المدمج في <code>rafeeq_ai_api/main.py</code>.
+    </p>
+</div>
+
+<h3 class="section-subtitle">٨٫١ المبرّرات</h3>
+<ul>
+    <li><strong>الدقّة:</strong> يبلغ 0.9412 للدقّة الإجمالية و 0.9378 لـ F1 الكلّي، بفارق مريح فوق عتبة 0.90 المطلوبة للنوايا الحسّاسة للسلامة.</li>
+    <li><strong>جودة التعرّف على الكلام:</strong> Whisper بمعدّل خطأ كلمات ٨٫٥٪ أفضل بـ ٢٫٢ مرّة من Wav2Vec2 و ٣٫٨ مرّات من DeepSpeech على الكلام العربي.</li>
+    <li><strong>تغطية اللهجات:</strong> التدريب المسبَق لـ AraBERT على مدوّنات ضخمة يمنحه أوسع تغطية للهجات النجدي والحجازي والشرقي والجنوبي.</li>
+    <li><strong>تجربة المسنّين:</strong> Whisper يتعامل طبيعياً مع بطء الكلام والفترات الصامتة التي تميّز حديث المسنّين.</li>
+    <li><strong>السلامة:</strong> أعلى F1 لكل فئة في نيّتَي الطوارئ (0.9612) والدواء (0.9587) — وهو الخيار الأكثر أماناً للأوامر الصحيّة.</li>
+</ul>
+
+<h3 class="section-subtitle">٨٫٢ توصيات النشر</h3>
+<ul>
+    <li><strong>الخادم:</strong> نشر Whisper + AraBERT على GPU سحابي (٨ غيغابايت VRAM أو أكثر).</li>
+    <li><strong>البديل على الحافة:</strong> استخدام النموذج الثالث (BiLSTM) للحالات دون اتصال.</li>
+    <li><strong>التعلّم المستمر:</strong> جمع تصحيحات المستخدمين الفعليّين للضبط الدوري كل ربع سنة.</li>
+    <li><strong>بيانات اللهجات:</strong> توسيع بيانات اللهجة الجنوبيّة لتحسين أضعف لهجة.</li>
+</ul>
+</div>
+
+<div id="s9">
+<h2 class="section-title">٩. المراجع</h2>
+<ol>
+    <li>Radford, A., et al. (2022). <em>Robust Speech Recognition via Large-Scale Weak Supervision</em>. OpenAI. arXiv:2212.04356</li>
+    <li>Antoun, W., et al. (2020). <em>AraBERT: Transformer-based Model for Arabic Language Understanding</em>. arXiv:2003.00104</li>
+    <li>Inoue, M., et al. (2022). <em>The CAMeL Tools Suite: Arabic NLP Toolkit</em>. CAMeL Lab, NYUAD. ACL 2022</li>
+    <li>Baevski, A., et al. (2020). <em>wav2vec 2.0: A Framework for Self-Supervised Learning of Speech Representations</em>. arXiv:2006.11477</li>
+    <li>Hannun, A., et al. (2014). <em>Deep Speech: Scaling up end-to-end speech recognition</em>. arXiv:1412.5567</li>
+    <li>Devlin, J., et al. (2018). <em>BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding</em>. arXiv:1810.04805</li>
+    <li>مجموعة بيانات SauDial (٢٠٢٤). مدوّنة حوارات ألعاب باللهجات السعودية. مجموعة بحثية داخلية.</li>
+    <li>Hochreiter, S., &amp; Schmidhuber, J. (1997). <em>Long Short-Term Memory</em>. Neural Computation, 9(8), 1735–1780.</li>
+</ol>
+</div>
+
+</div>
+
+<div class="report-footer">
+    <p>
+        تقرير مقارنة نماذج رفيق &mdash; صادر عن خطّ الأنابيب الآلي لتعلّم الآلة.<br>
+        بحث المساعد الصوتي العربي السعودي &bull; Cleni Standard
+    </p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+{
+  "hosting": {
+    "public": "build/web",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [{ "source": "**", "destination": "/index.html" }],
+    "headers": [
+      {
+        "source": "**/*.@(js|css)",
+        "headers": [{ "key": "Cache-Control", "value": "max-age=31536000, immutable" }]
+      },
+      {
+        "source": "index.html",
+        "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+      }
+    ]
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "rqfeeq-bc4c8",
+          "appId": "1:320246342406:android:1af06a4334622701f7b487",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "rqfeeq-bc4c8",
+          "configurations": {
+            "android": "1:320246342406:android:1af06a4334622701f7b487",
+            "ios": "1:320246342406:ios:8e5a780fc4c8cda2f7b487"
+          }
+        }
+      }
+    }
+  }
+}

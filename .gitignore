@@ -1,0 +1,102 @@
+# ── Large / generated files — do not commit ─────────────────────────────────
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.claude/
+
+# Python virtualenvs
+.venv/
+venv/
+env/
+ENV/
+
+# Node / Firebase tooling
+node_modules/
+.firebase/
+firebase-debug.log
+
+# Flutter / Dart
+flutter_app/.dart_tool/
+flutter_app/.flutter-plugins
+flutter_app/.flutter-plugins-dependencies
+flutter_app/build/
+flutter_app/.pub-cache/
+flutter_app/.pub/
+flutter_app/pubspec.lock
+flutter_app/*.log
+flutter_app/ios/Pods/
+flutter_app/ios/.symlinks/
+flutter_app/macos/Pods/
+flutter_app/android/.gradle/
+flutter_app/android/app/build/
+flutter_app/android/local.properties
+flutter_app/android/key.properties
+flutter_app/android/**/*.keystore
+flutter_app/android/**/*.jks
+
+# ML — trained weights, checkpoints, datasets, cached HF models
+machine_learning/outputs/models/*
+*.bin
+*.safetensors
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.h5
+*.tflite
+*.pkl
+*.joblib
+
+# HuggingFace / torch caches
+.cache/
+huggingface/
+transformers_cache/
+
+# Datasets — keep small CSVs tracked explicitly if needed, but ignore large ones
+*.csv
+*.tsv
+*.parquet
+*.arrow
+*.xlsx
+*.xls
+!machine_learning/dataset/explain.md
+
+# Audio / video / images bigger than source control wants
+*.wav
+*.mp3
+*.flac
+*.ogg
+*.m4a
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+*.rar
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+service-account*.json
