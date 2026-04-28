@@ -66,6 +66,8 @@ transformers_cache/
 *.xlsx
 *.xls
 !machine_learning/dataset/explain.md
+!machine_learning/outputs/data/
+!machine_learning/outputs/data/**
 
 # Audio / video / images bigger than source control wants
 *.wav

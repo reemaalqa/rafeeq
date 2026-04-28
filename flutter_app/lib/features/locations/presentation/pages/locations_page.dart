@@ -25,13 +25,19 @@ import '../widgets/place_list_sheet.dart';
 ///
 /// All business logic lives in [LocationsCubit] — this widget is purely
 /// presentational.
+///
+/// Pass [initialCategory] to open directly on a specific filter
+/// (e.g. from voice: "مستوصف" → PlaceCategory.clinic).
 class LocationsPage extends StatelessWidget {
-  const LocationsPage({super.key});
+  final PlaceCategory? initialCategory;
+
+  const LocationsPage({super.key, this.initialCategory});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<LocationsCubit>(
-      create: (_) => GetIt.instance<LocationsCubit>()..init(),
+      create: (_) =>
+          GetIt.instance<LocationsCubit>()..init(initialCategory: initialCategory),
       child: const _LocationsView(),
     );
   }

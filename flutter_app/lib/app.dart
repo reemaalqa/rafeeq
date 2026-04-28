@@ -21,6 +21,7 @@ import 'features/islamic/presentation/pages/prayer_times_page.dart';
 import 'features/islamic/presentation/pages/quran_page.dart';
 import 'features/islamic/presentation/pages/surah_detail_page.dart';
 import 'features/islamic/presentation/pages/islamic_advice_page.dart';
+import 'features/locations/domain/entities/place.dart';
 import 'features/locations/presentation/pages/locations_page.dart';
 import 'features/emergency/presentation/cubit/emergency_cubit.dart';
 import 'features/emergency/presentation/pages/emergency_page.dart';
@@ -134,8 +135,9 @@ class RafeeqApp extends StatelessWidget {
                   return MaterialPageRoute(
                       builder: (_) => const IslamicAdvicePage());
                 case '/locations':
+                  final category = settings.arguments as PlaceCategory?;
                   return MaterialPageRoute(
-                      builder: (_) => const LocationsPage());
+                      builder: (_) => LocationsPage(initialCategory: category));
                 case '/emergency':
                   return MaterialPageRoute(
                       builder: (_) => const EmergencyPage());

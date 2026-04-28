@@ -551,10 +551,14 @@ class ConversationCubit extends Cubit<ConversationState> {
     await _respondAndListen(response, clearFlow: true);
   }
 
-  /// Quran with a specified surah pushes the reader page and we don't want to
-  /// ask a follow-up while the recitation is starting — detect that case.
+  /// Returns true when the intent causes a page navigation so we skip the
+  /// "تحتاج شي ثاني؟" follow-up prompt.
   bool _isNavigatingAway(IntentType type, Map<String, String> params) {
-    return type == IntentType.quran && (params['surah'] ?? '').isNotEmpty;
+    if (type == IntentType.quran && (params['surah'] ?? '').isNotEmpty) {
+      return true;
+    }
+    if (type == IntentType.locations) return true;
+    return false;
   }
 
   /// Folds Arabic letter variants so surah matching tolerates common STT
@@ -695,12 +699,12 @@ class ConversationCubit extends Cubit<ConversationState> {
       (failure) => 'عذرا، ما قدرت أجيب أوقات الصلاة.',
       (prayerTimes) {
         final fmt = DateFormat('h:mm', 'ar');
-        final buffer = StringBuffer('أوقات الصلاة اليوم: ');
-        buffer.write('الفجر ${fmt.format(prayerTimes.fajr)}، ');
-        buffer.write('الظهر ${fmt.format(prayerTimes.dhuhr)}، ');
-        buffer.write('العصر ${fmt.format(prayerTimes.asr)}، ');
-        buffer.write('المغرب ${fmt.format(prayerTimes.maghrib)}، ');
-        buffer.write('العشاء ${fmt.format(prayerTimes.isha)}.');
+        final buffer = StringBuffer('ابشر! أوقات الصلاة اليوم: ');
+        buffer.write('الفجر وقته ${fmt.format(prayerTimes.fajr)}، ');
+        buffer.write('الظهر وقته ${fmt.format(prayerTimes.dhuhr)}، ');
+        buffer.write('العصر وقته ${fmt.format(prayerTimes.asr)}، ');
+        buffer.write('المغرب وقته ${fmt.format(prayerTimes.maghrib)}، ');
+        buffer.write('العشاء وقته ${fmt.format(prayerTimes.isha)}.');
         return buffer.toString();
       },
     );
@@ -808,32 +812,9 @@ class ConversationCubit extends Cubit<ConversationState> {
     final placeNameArabic = _placeNameArabic(placeType);
     final category = _placeCategory(placeType);
 
-    final locationResult = await _getCurrentLocation();
-    return await locationResult.fold(
-      (failure) async =>
-          'عذرا، ما قدرت أحدد موقعك. تأكد ان الموقع مفعل.',
-      (location) async {
-        final placesResult = await _getPlaces(category);
-        return placesResult.fold(
-          (failure) => 'عذرا، ما لقيت $placeNameArabic قريب منك.',
-          (places) {
-            if (places.isEmpty) {
-              return 'ما لقيت $placeNameArabic قريب من موقعك.';
-            }
-            final nearest = places.first;
-            final buffer = StringBuffer('أقرب $placeNameArabic: ${nearest.nameAr}');
-            buffer.write('.');
-            if (nearest.address.isNotEmpty) {
-              buffer.write(' العنوان: ${nearest.address}.');
-            }
-            if (nearest.phone != null && nearest.phone!.isNotEmpty) {
-              buffer.write(' الرقم: ${nearest.phone}.');
-            }
-            return buffer.toString();
-          },
-        );
-      },
-    );
+    _autoListen = false;
+    navigatorKey.currentState?.pushNamed('/locations', arguments: category);
+    return 'ابشر! بفتح لك أقرب $placeNameArabic.';
   }
 
   Future<String> _executeQuran(Map<String, String> params) async {
@@ -1244,6 +1225,7 @@ class ConversationCubit extends Cubit<ConversationState> {
       case 'hospital': return 'مستشفى';
       case 'clinic': return 'عيادة';
       case 'restaurant': return 'مطعم';
+      case 'park': return 'حديقة';
       default: return 'مكان';
     }
   }
@@ -1255,6 +1237,7 @@ class ConversationCubit extends Cubit<ConversationState> {
       case 'hospital': return PlaceCategory.hospital;
       case 'clinic': return PlaceCategory.clinic;
       case 'restaurant': return PlaceCategory.restaurant;
+      case 'park': return PlaceCategory.park;
       default: return PlaceCategory.mosque;
     }
   }

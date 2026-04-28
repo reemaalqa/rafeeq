@@ -24,8 +24,8 @@ class LocationsCubit extends Cubit<LocationsState> {
   // ---------------------------------------------------------------------------
 
   /// Initialises the feature: resolves the device location first, then loads
-  /// the default category (mosque).
-  Future<void> init() async {
+  /// [initialCategory] (defaults to mosque when not specified).
+  Future<void> init({PlaceCategory? initialCategory}) async {
     emit(state.copyWith(status: LocationsStatus.loading));
 
     final locationResult = await _getCurrentLocation();
@@ -35,7 +35,7 @@ class LocationsCubit extends Cubit<LocationsState> {
       },
       (position) {
         emit(state.copyWith(currentPosition: position));
-        loadCategory(PlaceCategory.mosque);
+        loadCategory(initialCategory ?? PlaceCategory.mosque);
       },
     );
   }

@@ -1,0 +1,319 @@
+﻿text,intent,dialect,source
+يا رفيق وين أقرب مسجد,locations,Eastern,synthetic_aug
+الإنسولين الساعة كم,medication,Eastern,synthetic
+الكشف الدوري موعده,reminders,Eastern,synthetic
+"""لا تخليهم يعدونك! ثبت مكانك!""",locations,Eastern,saudial
+ابغى تساعدني اشرح مرة ثانية,general,Hijazi,synthetic_aug
+ابغى سورة الملك قبل النوم,quran,Hijazi,synthetic_aug
+استغفر الله,islamic_advice,Hijazi,synthetic
+ابغى حكاية جدة,conversation,Najdi,synthetic_aug
+ابغى دعاء لولدي بسرعة,islamic_advice,Najdi,synthetic_aug
+ساعدني حكاية قديمة من فضلك,conversation,Hijazi,synthetic_aug
+يا رفيق دعاء لولدي بسرعة,islamic_advice,Hijazi,synthetic_aug
+ساعدني الطريق السريع رقم كم,locations,Eastern,synthetic_aug
+ايش الجديد في العالم,conversation,Hijazi,synthetic
+احتاج كسرت رجلي من فضلك,emergency,Najdi,synthetic_aug
+قولي ألم شديد في البطن,emergency,Najdi,synthetic_aug
+فضل قراءة القرآن,islamic_advice,Eastern,synthetic
+رفيق ابغى دعاء,islamic_advice,Janoubi/Southern,synthetic_aug
+ساعدني دلني على معمل التحاليل الحين,locations,Najdi,synthetic_aug
+الصوت واطي ارفع,general,Najdi,synthetic
+ابغى تساعدني كم باقي على العصر يا أخوي,prayer_time,Janoubi/Southern,synthetic_aug
+ابغى تساعدني بديل لهذا الدواء,medication,Hijazi,synthetic_aug
+ابغى فطور صحي ايش آكل الحين,diet,Hijazi,synthetic_aug
+"""ثبت في مكانك، لا تفقد تركيزك!""",locations,Najdi,saudial
+احتاج هل أخذت حبوبي اليوم من فضلك,medication,Janoubi/Southern,synthetic_aug
+"""أهلا، يا أسطورة الكورة الجاية! ابدأ من شوارع جدة وصير نجم وطني. اتقن الحركات الفنية، تحدى الأبطال المحليين، وشارك في بطولات الشاطئ. صمم لاعبك بأحدث موضة الشارع والحركات المميزة. ورّي العالم ستايل وشغف كورة الشارع السعودية!""",general,Hijazi,saudial
+آية عن البر والوالدين,quran,Hijazi,synthetic
+أقرب عيادة جلدية يا أخوي,locations,Eastern,synthetic_aug
+"""ترتيب النقل الجماعي لحجاج حملتنا مثل حل لغز صعب. كل واحد له طلبات مختلفة.""",islamic_advice,Najdi,saudial
+شكراً,general,Hijazi,synthetic
+ساعدني المنبه ما صحاني,reminders,Eastern,synthetic_aug
+أهلاً وسهلاً,general,Hijazi,synthetic
+"""يا هلا، يا الباحث الشجاع عن اللولو! قود رحلة غوص تقليدية للبحث عن اللولو في الخليج. اغطس بالطرق القديمة، دور على مكامن المحار، ولقي اللولو الثمين. دير بالك على هواء البحارة وانتبه من مخاطر البحر. جرب الحياة الصعبة حق غواصين اللولو في الماضي!""",general,Eastern,saudial
+ممكن دعاء كرب يا أخوي,islamic_advice,Najdi,synthetic_aug
+تفسير ابن كثير,quran,Najdi,synthetic
+رفيق الإسهال وش أكل الحين,diet,Eastern,synthetic_aug
+موعد صرف الراتب,reminders,Janoubi/Southern,synthetic
+"""هلا، يا صاحب النظرة الكروية! ابني ودير النظام الكامل للكورة السعودية. طور أكاديميات الناشئين، وحدّث الاستادات، وتفاوض على حقوق النقل التلفزيوني، وقوّ المنتخب الوطني. وازن بين القرارات المالية والنجاح الرياضي. اختياراتك بتشكل مستقبل الكورة السعودية. تقدر تقود المملكة للسيطرة على الكورة العالمية؟""",general,Eastern,saudial
+أفضل وقت لصلاة الليل,prayer_time,Hijazi,synthetic
+ابغى كيف أروح للعيادة الحين,locations,Janoubi/Southern,synthetic_aug
+دواء الغدة من فضلك,medication,Eastern,synthetic_aug
+ابغى سنة الفجر كم ركعة يا أخوي,prayer_time,Najdi,synthetic_aug
+ساعدني متى تكتمل ختمة القرآن بسرعة,quran,Janoubi/Southern,synthetic_aug
+ابغى تساعدني وش يناسب الكبار,diet,Hijazi,synthetic_aug
+ابغى تساعدني محتاج وصفة طبية الحين,medication,Eastern,synthetic_aug
+فتوى سريعة,islamic_advice,Hijazi,synthetic
+رفيق قولي شيء يضحكني بسرعة,conversation,Janoubi/Southern,synthetic_aug
+ممكن اذكرني بصلاة المغرب يا أخوي,prayer_time,Hijazi,synthetic_aug
+"""مرحبا، يا دليل الحجاج الرقمي! طور برنامج تدريب افتراضي للحج. سوي محاكاة تخلي الحجاج يعيشوا تجربة الطواف والسعي والشعائر التانية. صمم دروس تفاعلية عن قواعد الحج وآدابه. ساعد الحجاج من كل العالم يستعدوا لرحلتهم الروحية. خلي تجربة التعلم غنية زي الحج نفسه!""",islamic_advice,Hijazi,saudial
+قصة من التراث من فضلك,conversation,Najdi,synthetic_aug
+ابغى فيه حريق يا أخوي,emergency,Hijazi,synthetic_aug
+"""قل القصيدة الحربية، تذكرنا بشجاعة أجدادنا.""",reminders,Najdi,saudial
+تفهم العامية السعودية الحين,general,Eastern,synthetic_aug
+ممكن الدواء هذا قديم,medication,Najdi,synthetic_aug
+جار المستشفى كيف أدخل,locations,Najdi,synthetic
+رفيق موقع الرياض إيش مرجع من فضلك,locations,Janoubi/Southern,synthetic_aug
+رفيق طفل ابتلع شي بسرعة,emergency,Hijazi,synthetic_aug
+"""لقينا الخريطة! يالله نبدأ المغامرة!""",locations,Najdi,saudial
+قولي ذكر الله يا أخوي,islamic_advice,Janoubi/Southern,synthetic_aug
+رفيق ليلة طيبة,general,Eastern,synthetic_aug
+ساعدني حساء الدجاج فيه كالوري كم,diet,Hijazi,synthetic_aug
+يا رفيق أوقات الصلاة الأسبوع القادم,prayer_time,Najdi,synthetic_aug
+ضربة شمس أصابتني يا أخوي,emergency,Najdi,synthetic_aug
+هل دخل وقت العصر بسرعة,prayer_time,Hijazi,synthetic_aug
+"""نحتاج نكسر خط دفاعهم، ادفعوا أقوى!""",emergency,Southern,saudial
+ابغى تساعدني حكاية جدة من فضلك,conversation,Najdi,synthetic_aug
+قولي كلام يعطيني أمل يا أخوي,conversation,Eastern,synthetic_aug
+كم الوقت الحين,reminders,Janoubi/Southern,synthetic
+كلام يعطيني أمل,conversation,Najdi,synthetic
+رفيق اصطدمت بالسيارة من فضلك,emergency,Hijazi,synthetic_aug
+طعام الكلى الحين,diet,Hijazi,synthetic_aug
+ما أحس بقدمي,emergency,Janoubi/Southern,synthetic
+"""نادي بالتعزيزات، ما نقدر نحافظ على الموقع وحدنا!""",locations,Southern,saudial
+يا رفيق ملح قليل كيف أعوّد,diet,Najdi,synthetic_aug
+قولي وقت صلاة الجنازة من فضلك,prayer_time,Najdi,synthetic_aug
+رفيق قياس السكر كل يوم,reminders,Janoubi/Southern,synthetic_aug
+يا رفيق وش أشرب غير الماء بسرعة,diet,Eastern,synthetic_aug
+وش تعرف,general,Eastern,synthetic
+احتاج آية عن الموت,quran,Hijazi,synthetic_aug
+علم ينتفع به,islamic_advice,Hijazi,synthetic
+ابغى إيش اسمك يا أخوي,general,Najdi,synthetic_aug
+ساعدني قاموس عربي من فضلك,general,Najdi,synthetic_aug
+تشنجت بسرعة,emergency,Najdi,synthetic_aug
+"""حياك، يا عالم البحر! قود البحوث المتطورة عن بيئة الخليج العربي. ادرس الشعاب المرجانية، راقب التنوع البحري، وطور طرق صيد مستدامة. استخدم التقنية المتطورة لاستكشاف البحر. شغلك بيشكل مستقبل الحفاظ على البيئة في الخليج!""",quran,Eastern,saudial
+ابغى تساعدني فعّل التنبيهات الحين,reminders,Najdi,synthetic_aug
+ارفع الصوت,quran,Najdi,synthetic
+آخر آية نزلت بسرعة,quran,Hijazi,synthetic_aug
+ضربة شمس أصابتني من فضلك,emergency,Hijazi,synthetic_aug
+رفيق صليت الظهر,prayer_time,Janoubi/Southern,synthetic_aug
+ممكن هل تفهم بالنجدي من فضلك,general,Hijazi,synthetic_aug
+ابعث إسعاف على طول,emergency,Eastern,synthetic
+يا رفيق شكراً رفيق من فضلك,conversation,Eastern,synthetic_aug
+"""حياكم الله في ندوة أخلاقيات الذكاء الاصطناعي في الخبر. موضوعنا الحار اليوم: نخلي أنظمة الذكاء الاصطناعي تقرر في إنتاج النفط؟ لا تنسى، اقتصادنا وبيئتنا على المحك. خلونا نوازن بين العادات والإبداع، بس نخلي قيمنا في الأساس.""",reminders,Eastern,saudial
+رفيق يساعد كيف,conversation,Eastern,synthetic
+ابغى تساعدني سبحة الذكر بعد الصلاة,prayer_time,Najdi,synthetic_aug
+ابغى أفضل وقت لصلاة الليل من فضلك,prayer_time,Hijazi,synthetic_aug
+ابغى التفاح في الصبح بسرعة,diet,Najdi,synthetic_aug
+أسبرين في البيت,medication,Hijazi,synthetic
+رأسي يدور,emergency,Eastern,synthetic
+اتصل بأهلي وقل لهم طاحت,emergency,Eastern,synthetic
+"""قبل الحج، لازم نسدد ديوننا ونطلب السماح. دي رحلة للروح.""",islamic_advice,Hijazi,saudial
+دمي ما يوقف,emergency,Eastern,synthetic
+دواء الغدة الحين,medication,Janoubi/Southern,synthetic_aug
+رفيق ذكي الحين,conversation,Janoubi/Southern,synthetic_aug
+ممكن خضار طازجة كيف أحضرها يا أخوي,diet,Hijazi,synthetic_aug
+ابغى دعاء المريض من فضلك,islamic_advice,Hijazi,synthetic_aug
+أكلة للضغط,diet,Hijazi,synthetic
+الدفاع المدني رقمه,locations,Eastern,synthetic
+يا رفيق عادات الكبار بالسعودية,conversation,Eastern,synthetic_aug
+احتاج المضاد الحيوي انتهيت منه,medication,Eastern,synthetic_aug
+أكلة للضغط يا أخوي,diet,Eastern,synthetic_aug
+"""يا هلا بصيادين الكنوز! بنغوص في الخليج العربي عشان نطلع حمولة ضايعة من سفينة برتغالية من القرن السادس عشر. استخدم السونار الذكي لمسح قاع البحر، بس انتبه من الجن الحارس - حرسوا الكنز هذا مئات السنين وما يحبون الغرباء!""",general,Eastern,saudial
+اصطدمت بالسيارة,emergency,Hijazi,synthetic
+يا رفيق ايش كان أجدادنا يعملون,conversation,Najdi,synthetic_aug
+ما عندي أحد أحكيه الحين,conversation,Najdi,synthetic_aug
+احتاج وين أمشي بأمان,locations,Hijazi,synthetic_aug
+ذكرني أجلس مع العيال,reminders,Hijazi,synthetic
+"""آثار الجمل على الرمل خريطة للي يعرف يقراها.""",locations,Eastern,saudial
+ابغى رفيق يساعد كيف,conversation,Eastern,synthetic_aug
+أنت رائع,general,Janoubi/Southern,synthetic
+"""مرحبا، يا حافظ التراث! قود مشروع لإحياء الحرف العسيرية القديمة. نظم ورش تعلم الرجال والحريم الطرق القديمة في النسيج والفخار والنحت على الخشب. سوّ سوق على النت للحرفيين يبيعون شغلهم. حافظ على تراث عسير وأعطي فرص للكسب!""",quran,Southern,saudial
+أطول آية في القرآن,quran,Hijazi,synthetic
+احتاج ذكرني كل يوم الساعة ٨ من فضلك,reminders,Hijazi,synthetic_aug
+"""سلام، يا مراقب نجوم الرمال! دل الزوار على فن الفلك الصحراوي القديم. علمهم الملاحة بالنجوم على الطريقة القديمة، واحكي قصص الأبراج البدوية، وورّيهم كيف استخدموا أجدادنا السماء بالليل. اربط الماضي بالحاضر تحت سماء نجد الواسعة.""",locations,Najdi,saudial
+يعطيك العافية,general,Najdi,synthetic
+يا رفيق إيقاف القرآن الحين,quran,Najdi,synthetic_aug
+طعام خفيف للمعدة,diet,Janoubi/Southern,synthetic
+عيادة الأسنان أين,locations,Janoubi/Southern,synthetic
+ممكن كيف تشتغل,conversation,Eastern,synthetic_aug
+"""الرموز القديمة على صخرة الفيل تطلع بس تحت ضوء القمر. يلا، فك رموزها قبل يطلع الفجر!""",prayer_time,Najdi,saudial
+القرآن وأنا نايم يضر,quran,Janoubi/Southern,synthetic
+ساعدني طعام الكلى من فضلك,diet,Hijazi,synthetic_aug
+يا رفيق الأذان متى,prayer_time,Najdi,synthetic_aug
+ابغى تساعدني ذكرني بموعد الطبيب بسرعة,reminders,Najdi,synthetic_aug
+"""يا مرحبا في أول مهرجان لعربيات الأكل الطيارة في جدة! شغلتك: تدير كشك الشاورما العايم بتاعك، تفادى درونات السمبوسة اللي بتطير على الواطي، وتفوز بجايزة المغرفة الدهب. بس خلي بالك من الطعمية المضادة للجاذبية - في المهرجان دا، الأكل بيرد الضرب!""",diet,Hijazi,saudial
+"""يا هلا في سوق الرياض الافتراضي! تحديك: تدير دكان البسط الطيارة حقك، تفاصل الزباين الآليين، وتنتبه من الجني الشقي اللي يبي يسرق بضاعتك. تذكر، في السوق ذا، الصفقة الزينة تسوى وزنها ذهب رقمي!""",general,Najdi,saudial
+يا رفيق شغل سورة الفاتحة الحين,quran,Hijazi,synthetic_aug
+ابغى تساعدني أحسن قارئ للقرآن شغله الحين,quran,Hijazi,synthetic_aug
+ساعدني أذان المغرب متى بسرعة,prayer_time,Eastern,synthetic_aug
+ممكن تفسير ابن كثير يا أخوي,quran,Hijazi,synthetic_aug
+ابغى تساعدني أطول آية في القرآن,quran,Najdi,synthetic_aug
+ملح قليل كيف أعوّد,diet,Janoubi/Southern,synthetic
+عدد آيات سورة البقرة,quran,Eastern,synthetic
+هل أنت ذكي,conversation,Eastern,synthetic
+ابغى تساعدني دجاج مشوي بدون جلد,diet,Hijazi,synthetic_aug
+ابغى القرآن للأطفال يا أخوي,quran,Najdi,synthetic_aug
+ايش أقدر أسألك,general,Najdi,synthetic
+ساعدني كالوري اليوم كم يا أخوي,diet,Najdi,synthetic_aug
+احتاج عربي ولا إنجليزي,general,Hijazi,synthetic_aug
+هل تفهم بالنجدي,general,Najdi,synthetic
+يا رفيق فضل الذكر يا أخوي,islamic_advice,Hijazi,synthetic_aug
+قولي القرآن للأطفال يا أخوي,quran,Eastern,synthetic_aug
+عصير طبيعي للضغط,diet,Hijazi,synthetic
+ساعدني الصوت عالي خفف يا أخوي,general,Najdi,synthetic_aug
+موعد غسيل الكلى الحين,reminders,Eastern,synthetic_aug
+احتاج وين المخرج,locations,Hijazi,synthetic_aug
+"""هلال رمضان اليديد مثل بسمة من السما، ترحب بشهر الطيبة.""",general,Eastern,saudial
+حزب المفصل بسرعة,quran,Hijazi,synthetic_aug
+صلاة الاستخارة,islamic_advice,Najdi,synthetic
+ذكرني كل يوم الساعة ٨,reminders,Eastern,synthetic
+قولي ناد صحي مناسب لكبار السن الحين,locations,Hijazi,synthetic_aug
+"""الآل يوسوس: 'في قلب الربع الخالي فيه واحة الحكمة القديمة.'""",quran,Hijazi,saudial
+قياس السكر كل يوم,reminders,Eastern,synthetic
+ابغى تساعدني ما اسمك,general,Eastern,synthetic_aug
+ابغى تساعدني وصفة صحية سهلة,diet,Hijazi,synthetic_aug
+تذكير بالفاتورة,reminders,Hijazi,synthetic
+موقف السيارات وين بسرعة,locations,Najdi,synthetic_aug
+ذكرني بصلاة الفجر,prayer_time,Hijazi,synthetic
+"""تأكد إن الإحرام جاهز، بنطلع الفجر.""",prayer_time,Eastern,saudial
+ابغى تساعدني دواء الضغط متى آخذه بسرعة,medication,Hijazi,synthetic_aug
+صليت الظهر,prayer_time,Hijazi,synthetic
+رفيق هل الدواء مع القهوة,medication,Janoubi/Southern,synthetic_aug
+كلام يعطيني أمل بسرعة,conversation,Najdi,synthetic_aug
+يا رفيق السنة النبوية بسرعة,islamic_advice,Najdi,synthetic_aug
+"""كوزير البيئة الجديد، أول شغلة لك هي تنضيف كورنيش جدة. استخدم الدرونات البيئية عشان تكشف أماكن التلوث، وحط فلاتر ذكية في البلاعات، ونظم مسابقة لتنظيف الشاطئ. افتكر، الساحل النضيف هو ساحل مبسوط!""",quran,Hijazi,saudial
+ابغى معنى اسم رفيق,conversation,Hijazi,synthetic_aug
+ابغى حمية الكلى الحين,diet,Najdi,synthetic_aug
+قولي تذكير للفحص الدوري,reminders,Najdi,synthetic_aug
+كاب ماء كافي,diet,Hijazi,synthetic
+الحبوب هذي كم حبة باليوم من فضلك,medication,Hijazi,synthetic_aug
+ابغى يعطيك العافية يا أخوي,general,Hijazi,synthetic_aug
+"""يلا يا فارس الكم! سابق بهجينك الموجي عبر الزمكان. قوّ بـ'طاقة التشابك' وفل من حفر المفارقات. تذكر، بعيرك موجود بأبعاد متعددة لين تشوفه. الله يوفق أحسن خط زمني!""",reminders,Najdi,saudial
+ابغى تساعدني انتهى دوائي,medication,Janoubi/Southern,synthetic_aug
+سورة المزمل بسرعة,quran,Eastern,synthetic_aug
+"""بسم الله، يا صقار المستقبل! حياك في التدريب الافتراضي لأكاديمية الصقور الملكية. استخدم المنقلة عشان تنادي صقرك، وأتقن حركة التلواح، واصطاد الحبارى المجسمة. بس انتبه من الغربان المعطوبة اللي تسرق الطعم حقك! تذكر، 'الصقر أخو الصقار'.""",reminders,Najdi,saudial
+ممكن آية الرزق بسرعة,quran,Hijazi,synthetic_aug
+قولي وقعت وما أقدر أقوم,emergency,Hijazi,synthetic_aug
+رفيق الدواء ما صرف في الصيدلية,medication,Hijazi,synthetic_aug
+ممكن الطريق للمطار الحين,locations,Janoubi/Southern,synthetic_aug
+ممكن دواء ضد الحموضة,medication,Eastern,synthetic_aug
+رفيق حكم ترك الصلاة,islamic_advice,Eastern,synthetic_aug
+قولي خذ حبوبي,medication,Najdi,synthetic_aug
+هل هذا الدواء مناسب لي,medication,Najdi,synthetic
+أقرب مركز صحي يا أخوي,locations,Eastern,synthetic_aug
+ابغى أروح الحي الغربي,locations,Eastern,synthetic
+خصائصك إيش يا أخوي,general,Eastern,synthetic_aug
+ابغى تساعدني ذكرني أحجز موعد,reminders,Janoubi/Southern,synthetic_aug
+ممكن صلاة الاستخارة,islamic_advice,Eastern,synthetic_aug
+"""مرحبا، يا الدليل المسافر عبر الزمن! ودي الزوار لمكة القديمة. مثّل الأحداث التاريخية، وورّي العادات الحجازية القديمة، وأحيي قصص الحجاج من زمان. سوي تجربة تخلي الزوار يعيشوا تاريخ المدينة المقدسة الغني.""",islamic_advice,Hijazi,saudial
+ساعدني هل هذا الدواء مناسب لي,medication,Eastern,synthetic_aug
+ابغى تساعدني تذكير يومي بالماء بسرعة,reminders,Janoubi/Southern,synthetic_aug
+ذكرني بصلاة المغرب,reminders,Hijazi,synthetic
+ضغطي عالي,emergency,Hijazi,synthetic
+ابغى وضّح لي الحين,general,Najdi,synthetic_aug
+"""هذي الرسومات في الكهف تحكي حاجة... بس ويش؟""",quran,Southern,saudial
+"""جاهز تكون أحسن واحد في باركور الجبال؟ وجه معزتك الشاطرة في منحدرات عسير الصعبة، واجمع الزهور الجبلية النادرة وتجنب القرود المشاغبة. تذكر، في اللعبة ذي، أحسن واحد مو بس يعني الأعظم - هو كمان اللي انت عليه!""",reminders,Southern,saudial
+رفيق ساعدني,emergency,Najdi,synthetic_aug
+وقعت وما أقدر أقوم,emergency,Janoubi/Southern,synthetic
+ساعدني كيف أروح البنك,locations,Najdi,synthetic_aug
+يا رفيق أضف دواء جديد لجدولي الحين,medication,Najdi,synthetic_aug
+مركز التسوق القريب بسرعة,locations,Hijazi,synthetic_aug
+انتهى دوائي يا أخوي,medication,Najdi,synthetic_aug
+نبهني قبل الأذان بعشر دقائق,prayer_time,Janoubi/Southern,synthetic
+احتاج الإشارة الحمراء وين أتحول,locations,Hijazi,synthetic_aug
+آية عن الشفاء,quran,Eastern,synthetic
+ابغى الجرعة الزائدة خطرها إيش,medication,Eastern,synthetic_aug
+رفيق حديقة عامة قريبة بسرعة,locations,Eastern,synthetic_aug
+قولي التوبة كيف من فضلك,islamic_advice,Eastern,synthetic_aug
+الإفطار الصحي رمضان يا أخوي,diet,Najdi,synthetic_aug
+ابغى علم ينتفع به من فضلك,islamic_advice,Najdi,synthetic_aug
+الطقس بكرة بسرعة,general,Eastern,synthetic_aug
+احتاج شعر عربي الحين,conversation,Najdi,synthetic_aug
+قولي وين المستشفى,locations,Hijazi,synthetic_aug
+"""حياك الله في قمم عسير، يا ساحر الطقس المبتدي! شغلتك: توازن الجو الحساس في جبالنا. نادِ على مطر خفيف للمدرجات، وفرق الغيوم عشان تفتح طريق للنسور الطايرة، وجيب الضباب عشان يغذي غابات العرعر القديمة. بس انتبه - رقصة مطر زايدة ممكن تغرق الوديان!""",quran,Southern,saudial
+ابغى تساعدني أضف دواء جديد لجدولي,medication,Janoubi/Southern,synthetic_aug
+ابغى ذكرني بصلاة الفجر بسرعة,prayer_time,Najdi,synthetic_aug
+"""الحجارة هذي من قرون واقفة، اسمع قصصها.""",islamic_advice,Najdi,saudial
+رفيق كسرت رجلي,emergency,Najdi,synthetic_aug
+"""مرحبتين بمركز التحكم المروري المستقبلي في الخبر! شغلتك: تنظم سمفونية السيارات ذاتية القيادة والتكاسي الطيارة والهجن التقليدية الغالية. استخدم الذكاء الاصطناعي عشان تتوقع حركة المرور، وغير مسار المركبات وقت الهبايب، ولا تنسى تجدول مسارات للقوافل الجمل الحبيبة. تذكر، في المدينة الذكية هذي، حتى الإشارات عندها روح الدعابة!""",reminders,Eastern,saudial
+عندي حساسية من هذا الدواء بسرعة,medication,Hijazi,synthetic_aug
+ابغى اتجاه الكعبة وين,prayer_time,Janoubi/Southern,synthetic_aug
+يا رفيق راتبة الظهر كم بسرعة,prayer_time,Janoubi/Southern,synthetic_aug
+قولي الصلاة على الميت,prayer_time,Najdi,synthetic_aug
+هل دخل وقت العصر,prayer_time,Hijazi,synthetic
+ابغى وقت صلاة الجنازة يا أخوي,prayer_time,Najdi,synthetic_aug
+ابغى تساعدني الإمساك وش يساعد الحين,diet,Eastern,synthetic_aug
+بديل لهذا الدواء,medication,Eastern,synthetic
+موعد التحاليل,reminders,Hijazi,synthetic
+ممكن الإمام يصلي الحين من فضلك,prayer_time,Najdi,synthetic_aug
+الرفق بالضعفاء,islamic_advice,Eastern,synthetic
+"""امشي على درب الحجاج الأولين.""",islamic_advice,Hijazi,saudial
+قولي جلسة العلاج متى الحين,reminders,Hijazi,synthetic_aug
+دعاء المريض بسرعة,islamic_advice,Najdi,synthetic_aug
+"""يا هلا بغواصين اللولو الافتراضيين! غوصوا في مية الخليج العربي التاريخية. تحركوا في التيارات الخطرة، تجنبوا سمك القرش الجوعان، واكتشفوا أسرار العمق. بس انتبهوا - لولوة البحرين الأسطورية يحرسها جني قديم. بتسوون التاريخ ولا بتصيرون جزء منه؟""",emergency,Eastern,saudial
+ابغى تساعدني علمني كلمة إنجليزية,conversation,Hijazi,synthetic_aug
+اشرح مرة ثانية,general,Janoubi/Southern,synthetic
+عيادة القلب وين,locations,Eastern,synthetic
+يا رفيق سبحان الله وبحمده يا أخوي,islamic_advice,Janoubi/Southern,synthetic_aug
+"""سوق السفينة زين، الميناء زحمة اليوم.""",locations,Hijazi,saudial
+وش أشرب غير الماء بسرعة,diet,Eastern,synthetic_aug
+ابغى تساعدني ايش الجديد في العالم من فضلك,conversation,Najdi,synthetic_aug
+"""سافر على دروب التجارة القديمة في نجران. اكتشف الكنوز المدفونة، وحل الألغاز التاريخية، وتعرف على تاريخ التجارة العريق في المنطقة. مسارك راح يكون بمساعدة خرائط وأساطير قديمة.""",general,Southern,saudial
+فاكهة للسكري من فضلك,diet,Najdi,synthetic_aug
+احتاج الكهرباء أصابتني يا أخوي,emergency,Janoubi/Southern,synthetic_aug
+قولي لبن يومي مناسب,diet,Hijazi,synthetic_aug
+"""سلام عليكم، يا مساعد الحج الصغير! ساعد الحجاج من كل أنحاء العالم في رحلتهم المقدسة. دلهم على المناسك، ساعد في الترجمة، واضمن راحة وسلامة الكل. اتعرف على الثقافات المختلفة وانشر روح الوحدة!""",islamic_advice,Hijazi,saudial
+احتاج تذكير للفحص الدوري,reminders,Eastern,synthetic_aug
+خطة أكل رمضان يا أخوي,diet,Janoubi/Southern,synthetic_aug
+ممكن إيش يقال بعد الأذان يا أخوي,prayer_time,Najdi,synthetic_aug
+ابغى تساعدني تكلم بالعربي يا أخوي,general,Hijazi,synthetic_aug
+يا رفيق أذكار المساء الحين,islamic_advice,Eastern,synthetic_aug
+يا رفيق قياس السكر كل يوم,reminders,Eastern,synthetic_aug
+احتاج رأسي يدور من فضلك,emergency,Najdi,synthetic_aug
+اشرح لي المشكلة,conversation,Hijazi,synthetic
+رفيق عيادة الأسنان أين يا أخوي,locations,Janoubi/Southern,synthetic_aug
+قولي جدول أدويتي اليوم يا أخوي,medication,Eastern,synthetic_aug
+"""سلام، يا عشاق التقنية! نظموا أول هاكاثون مختلط في الظهران. سووا بيئة آمنة وشاملة لكل المشاركين. صمموا تحديات تركز على مشاكلنا المحلية. شجعوا التعاون بين المبرمجين والمبرمجات. وروا مواهب التقنية المتنوعة في السعودية!""",prayer_time,Eastern,saudial
+أقصر سورة من فضلك,quran,Najdi,synthetic_aug
+ممكن بروتين يومي كم جرام يا أخوي,diet,Hijazi,synthetic_aug
+مواعيدي اليوم إيش عندي من فضلك,reminders,Eastern,synthetic_aug
+ساعدني وش أشرب الحين بسرعة,diet,Eastern,synthetic_aug
+"""انت محبوس في الدور الـ300 من برج جدة. حل الألغاز عشان تفتح المصعد السريع قبل ما تضرب العاصفة. افتكر، وقت الطوارئ، حتى الجن بينزلوا من على الدرج!""",emergency,Hijazi,saudial
+"""سلام عليكم، يا حجاجنا الصغار! أنا المساعد الذكي حقكم للحج. يلا نستكشف المسجد الحرام الافتراضي مع بعض. افتكروا، حتى في العالم الرقمي، خلوا قلوبكم صافية ونيتكم خالصة. دحين، نبدأ بالطواف ولا نتعلم عن تاريخ الكعبة؟""",islamic_advice,Hijazi,saudial
+ممكن الصلاة على الميت الحين,prayer_time,Najdi,synthetic_aug
+ممكن ما أحس بنص جسمي,emergency,Najdi,synthetic_aug
+"""سلام عليكم، يا صانع المستقبل! أشرف على مشاريع رؤية 2030 المهمة. نوع الاقتصاد، طور مرفيق السياحة، وعزز المبادرات الثقافية. وازن بين العادات والتطوير. نسق بين الحكومة والقطاع الخاص. قراراتك بتشكل مستقبل المملكة!""",general,Najdi,saudial
+قولي ذكرني بصلاة المغرب يا أخوي,reminders,Najdi,synthetic_aug
+تذكير للفحص الدوري,reminders,Hijazi,synthetic
+احتاج شغل سورة الكهف الحين,quran,Eastern,synthetic_aug
+ابغى تساعدني جزء عم كامل الحين,quran,Janoubi/Southern,synthetic_aug
+رفيق قول شيء بالعربي,general,Janoubi/Southern,synthetic_aug
+وين أقرب مستشفى طوارئ الحين,emergency,Najdi,synthetic_aug
+ابغى علم ينتفع به,islamic_advice,Najdi,synthetic_aug
+المستشفى الحكومي وين,locations,Najdi,synthetic
+وش تفكر فيه الحين,conversation,Najdi,synthetic_aug
+رفيق وين أصرف الوصفة يا أخوي,locations,Eastern,synthetic_aug
+أذكار الصباح,islamic_advice,Hijazi,synthetic
+رفيق دعاء في القرآن,quran,Eastern,synthetic_aug
+قصة ملك سعودي,conversation,Eastern,synthetic
+"""الخريطة تقول الكنز مدفون تحت الرمال اللي تتحرك.""",locations,Najdi,saudial
+احتاج سيرة النبي صلى الله عليه وسلم يا أخوي,islamic_advice,Najdi,synthetic_aug
+يا رفيق آية عن الصبر,quran,Eastern,synthetic_aug
+قولي بر الوالدين فرض بسرعة,islamic_advice,Hijazi,synthetic_aug
+ذكرني أشتري الدواء,reminders,Janoubi/Southern,synthetic
+قولي تعب من الأكل المكرر,diet,Hijazi,synthetic_aug
+ممكن الدعاء للميت الحين,islamic_advice,Janoubi/Southern,synthetic_aug
+ابغى تساعدني ممنون الحين,general,Najdi,synthetic_aug
+"""عازف المزمار جه! يلا نبدأ رقصة مكة عشان فرحنا!""",conversation,Hijazi,saudial
+"""طحن البهارات زين، بتعطي الأكل نكهته الخاصة.""",diet,Hijazi,saudial
+"""يا هلا بالمزارع الجبلي! جدودك نحتوا المساطب ذي من قرون. الحين، اخلط الحكمة القديمة مع التقنية الحديثة عشان تسوي أحسن مزرعة مستدامة. وازن استخدام الموية، وحارب الآفات الغريبة، ويمكن تكتشف حضارة ضايعة أو ثنتين. تذكر، كل حجرة لها سالفة!""",islamic_advice,Southern,saudial
+قولي أنت رائع,general,Hijazi,synthetic_aug
+ممكن تعبت من الصمت من فضلك,conversation,Hijazi,synthetic_aug
+وقت صلاة المغرب اليوم يا أخوي,prayer_time,Eastern,synthetic_aug
+يا رفيق أوميغا 3 مع الأكل بسرعة,medication,Eastern,synthetic_aug
+يا رفيق آية الرزق الحين,quran,Hijazi,synthetic_aug
+"""حياكم في سوق الرياض الافتراضي! تحدي اليوم: ساعد الزباين يلقون أغراضهم المفضلة. انتبه، لا تخلط بين العود الرقمي والمكنسة الافتراضية - إلا إذا تبي تنظف البيت بالموسيقى! وتذكر، في السوق هذا تقدر تفاصل مع الزباين عشان أحسن سعر!""",reminders,Najdi,saudial
+ابغى تساعدني فتوى سريعة,islamic_advice,Najdi,synthetic_aug
+ابغى ذكرني بعيد ميلاد حفيدي,reminders,Eastern,synthetic_aug
+"""خريطة المترو تشبه صحن مكرونة مشخبط!""",locations,Eastern,saudial
+هل تحس بالوحدة,conversation,Hijazi,synthetic
+ابغى تاريخ انتهاء الدواء,medication,Najdi,synthetic_aug
+يا رفيق ناد صحي مناسب لكبار السن من فضلك,locations,Eastern,synthetic_aug
+ما أحس بقدمي بسرعة,emergency,Najdi,synthetic_aug
+يا رفيق إيش معنى هذه الكلمة من فضلك,general,Eastern,synthetic_aug
+ممكن وداعاً,general,Hijazi,synthetic_aug
+"""تجهيز شنطة الحج مثل حل بازل مقدس!""",islamic_advice,Najdi,saudial
+ممكن قصة فيها عبرة,conversation,Hijazi,synthetic_aug
+اتصل على نجدة بسرعة,emergency,Hijazi,synthetic_aug
+"""حبوبتي تقول، 'العيد مو عن الثياب اليديدة، عن القلوب اليديدة.'""",medication,Eastern,saudial
