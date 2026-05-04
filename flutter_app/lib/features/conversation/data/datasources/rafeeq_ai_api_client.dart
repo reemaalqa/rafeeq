@@ -24,7 +24,7 @@ import 'package:dio/dio.dart';
 
 const String _kBaseUrl = String.fromEnvironment(
   'RAFEEQ_AI_API_URL',
-  defaultValue: 'http://192.168.1.140:8000',
+  defaultValue: 'http://192.168.1.107:8000',
 );
 
 const Duration _kHealthCacheTtl = Duration(seconds: 30);

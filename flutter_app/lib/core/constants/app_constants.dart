@@ -11,7 +11,7 @@ class AppConstants {
   // Production:  use 'https://api.rafeeq.app'
   static const String baseUrl = String.fromEnvironment(
     'BASE_URL',
-    defaultValue: 'http://192.168.1.140:8000',
+    defaultValue: 'http://192.168.1.107:8000',
   );
   static const Duration connectionTimeout = Duration(seconds: 30);
   static const Duration receiveTimeout = Duration(seconds: 30);

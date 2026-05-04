@@ -267,7 +267,13 @@ class ConversationCubit extends Cubit<ConversationState> {
     // so the updated dialect is already in SharedPreferences when
     // _buildSystemInstruction() reads it for this same turn.
     _accumulatedUserText += ' $text';
-    _detectAndSaveDialect(_accumulatedUserText);
+    // Cap accumulator so old signal doesn't dominate forever — when the user
+    // switches dialect mid-session the new utterances must be able to win.
+    if (_accumulatedUserText.length > 600) {
+      _accumulatedUserText =
+          _accumulatedUserText.substring(_accumulatedUserText.length - 600);
+    }
+    _detectAndSaveDialect(text);
 
     final normalized = _normalizeForExtraction(text);
 
@@ -304,6 +310,18 @@ class ConversationCubit extends Cubit<ConversationState> {
     // ── If there's an active flow, treat this as a slot answer ───────────────
     if (state.hasActiveFlow) {
       await _processSlotAnswer(text);
+      return;
+    }
+
+    // ── Social/courtesy phrases get canned, dialect-appropriate replies ─────
+    // before we hit the intent system. This runs identically whether the
+    // remote AI API is reachable or not — the user gets a respectful
+    // response either way. Phrases that map to a real action (emergency,
+    // locations, reminders, …) intentionally fall through to intent
+    // detection below where the keyword list already covers them.
+    final socialReply = _handleSocialPhrase(normalized);
+    if (socialReply != null) {
+      await _respondAndListen(socialReply, clearFlow: true);
       return;
     }
 
@@ -1048,9 +1066,13 @@ class ConversationCubit extends Cubit<ConversationState> {
   ///
   /// Fire-and-forget — we do NOT await this in _processSpeech so it never
   /// blocks the response pipeline.
-  void _detectAndSaveDialect(String text) {
+  void _detectAndSaveDialect(String latestText) {
     Future(() async {
-      final result = _dialectDetector.detect(text);
+      // Try the latest utterance first so a dialect switch takes effect
+      // immediately; fall back to the accumulator only when the single
+      // utterance is too short to commit a confident result.
+      final result = _dialectDetector.detect(latestText) ??
+          _dialectDetector.detect(_accumulatedUserText);
       if (result == null) return;
 
       final prefs = await SharedPreferences.getInstance();
@@ -1127,6 +1149,124 @@ class ConversationCubit extends Cubit<ConversationState> {
         _autoListen = true;
       }
     }
+  }
+
+  /// Returns a canned, respectful Najdi-flavoured reply for short Saudi
+  /// social/courtesy utterances. When the phrase is purely conversational
+  /// (greeting, thanks, farewell, ماشاءالله, طفشان, …) we answer here
+  /// instead of pushing it through intent detection — the user expects an
+  /// immediate human-feeling response, not a routed action. Returns null
+  /// when the utterance isn't a recognised social phrase, so the caller
+  /// continues with normal intent classification.
+  String? _handleSocialPhrase(String normalized) {
+    bool has(String w) => normalized.contains(w);
+
+    // ── "وش قلت" — repeat the last bot message ──────────────────────────────
+    if (has('وش قلت') || has('ايش قلت') || has('وش قلتي') || has('عيد كلامك')) {
+      for (int i = state.messages.length - 1; i >= 0; i--) {
+        final m = state.messages[i];
+        if (!m.isUser && m.text.trim().isNotEmpty) {
+          return 'قلت لك: ${m.text}';
+        }
+      }
+      return 'ما قلت شي بعد يا طويل العمر. تفضل، أنا أسمعك.';
+    }
+
+    // ── ماشاءالله ──────────────────────────────────────────────────────────
+    if (has('ماشاءالله') || has('ماشاء الله') || has('ما شاء الله')) {
+      return 'تبارك الله. اللهم بارك. الله يحفظك ويبارك في عمرك.';
+    }
+
+    // ── الحمد لله بخير / زين ──────────────────────────────────────────────
+    if (has('الحمدالله بخير') ||
+        has('الحمد لله بخير') ||
+        has('الحمدلله بخير') ||
+        normalized.trim() == 'زين' ||
+        has(' زين ') ||
+        normalized.trim() == 'تمام') {
+      return 'الحمد لله، الله يديم عليك الصحة والعافية يا طويل العمر.';
+    }
+
+    // ── Farewell ────────────────────────────────────────────────────────────
+    if (has('فمان الله') ||
+        has('في امان الله') ||
+        has('فى امان الله') ||
+        has('معسلامه') ||
+        has('مع السلامه') ||
+        has('مع السلامة')) {
+      return 'في أمان الله ورعايته. الله يحفظك ويرعاك يا طويل العمر.';
+    }
+
+    // ── Thanks ──────────────────────────────────────────────────────────────
+    if (has('تسلم ما قصرت') ||
+        has('ما قصرت') ||
+        has('تسلم') ||
+        has('يعطيك العافيه') ||
+        has('يعطيك العافية')) {
+      return 'الله يسلمك ويعافيك. هذا واجبي، أنا في خدمتك دايم.';
+    }
+
+    // ── "اسلم وش بعد عندك" — what else do you have ─────────────────────────
+    if (has('وش بعد عندك') || has('ايش بعد عندك') || has('وش عندك كمان')) {
+      return 'أقدر أساعدك في أوقات الصلاة، أذكرك بدوياتك، أشغلك قرآن، '
+          'أقولك دعاء أو نصيحة، أدلك على أقرب مسجد أو مستوصف، '
+          'أو نسولف سوا. وش تبي؟';
+    }
+
+    // ── Greetings: شخبارك / علومك / كيفك دحين / اشبك اليوم / بشرني ─────────
+    if (has('شخبارك') ||
+        has('شخبارش') ||
+        has('علومك') ||
+        has('شلونك') ||
+        has('كيفك دحين') ||
+        has('كيف حالك') ||
+        has('اشبك اليوم') ||
+        has('شبك اليوم') ||
+        has('بشرني عنك')) {
+      return 'الحمد لله بخير وبأتم الصحة، الله يطول عمرك. وأنت كيفك اليوم؟';
+    }
+
+    // ── ابشر (alone or as a leading filler) ────────────────────────────────
+    if (normalized.trim() == 'ابشر' ||
+        normalized.startsWith('ابشر ') ||
+        normalized.endsWith(' ابشر')) {
+      // If "ابشر" came with extra text, let intent detection handle the rest
+      if (normalized.trim() != 'ابشر' && normalized.split(' ').length > 2) {
+        return null;
+      }
+      return 'حياك الله يا طويل العمر، تفضل قل اللي تبيه وأنا في خدمتك.';
+    }
+
+    // ── طفشان / مالي خلق ──────────────────────────────────────────────────
+    if (has('طفشان') ||
+        has('طفشانه') ||
+        has('مالي خلق') ||
+        has('ضايج') ||
+        has('ضايقه') ||
+        has('زهقان')) {
+      return 'الله يونسك ويفرّح قلبك يا طويل العمر. '
+          'تبي أقولك دعاء يريّحك، أو نسولف سوا، أو أشغّلك شي من القرآن؟';
+    }
+
+    // ── "اهرج معي" / "سولف معي" ─────────────────────────────────────────
+    if (has('اهرج معي') ||
+        has('سولف معي') ||
+        has('سولفلي') ||
+        has('كلمني شوي') ||
+        has('اتكلم معي')) {
+      return 'ابشر يا طويل العمر، أنا معاك. وش تبي نتكلم عنه؟ '
+          'تبي قصة، نكتة، شعر، ولا نسولف عن يومك؟';
+    }
+
+    // ── "قولي قصيدة / شعر" ─────────────────────────────────────────────────
+    if (has('قصيده') || has('قصيدة') || (has('شعر') && !has('شعرت'))) {
+      return 'ابشر، أقولك بيت من شعر:\n'
+          'ولا تيأسن من رحمة الله، إنها — '
+          'كأمّ تُدلّل طفلها وهو نائمُ.\n'
+          'الله يصلح حالنا وحالك يا طويل العمر.';
+    }
+
+    return null;
   }
 
   bool _isCancelCommand(String text) {
