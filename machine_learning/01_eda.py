@@ -1,10 +1,4 @@
-"""
-01_eda.py — Exploratory Data Analysis for the SauDial Dataset.
 
-Loads the SauDial CSV, produces ten publication-quality charts and saves
-them as PNG files to outputs/eda/.  A statistics summary is printed to
-stdout at the end.
-"""
 
 # ── standard library imports ───────────────────────────────────────────────
 import os
@@ -21,18 +15,16 @@ if hasattr(sys.stdout, "reconfigure"):
         pass
 
 # ── third-party data science stack ─────────────────────────────────────────
-import pandas as pd                  # tables / CSV I/O
-import numpy as np                   # numerical arrays
+import pandas as pd                  
+import numpy as np                  
 import matplotlib
-matplotlib.use("Agg")                 # non-interactive backend (save to file only)
+matplotlib.use("Agg")                 
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
-import seaborn as sns                # nicer statistical charts
+import seaborn as sns                
 
 # ── Arabic text shaping (optional) ─────────────────────────────────────────
-# Matplotlib draws Arabic letters left-to-right by default, which makes
-# them unreadable.  `arabic_reshaper` joins letter forms and `bidi`
-# reverses the logical order so Arabic labels render correctly.
+.
 try:
     import arabic_reshaper
     from bidi.algorithm import get_display
@@ -42,7 +34,6 @@ except ImportError:
     print("[WARN] arabic_reshaper / bidi not installed — Arabic labels will not render.")
 
 # ── local imports ──────────────────────────────────────────────────────────
-# Make sure Python can find config.py regardless of current working dir.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from config import DATASET_PATH, DATASET_ENCODING, EDA_DIR, CHART_DPI, CHART_STYLE, COLORS
 
@@ -74,9 +65,7 @@ def word_count(series: pd.Series) -> pd.Series:
 
 
 # ── chart functions ────────────────────────────────────────────────────────
-# Each function below generates one standalone chart.  They all follow the
-# same pattern: compute aggregated values → build a matplotlib figure →
-# save it to the EDA output directory via save_fig().
+
 
 def chart_dialect_bar(df: pd.DataFrame) -> None:
     """Bar chart: sample count per dialect."""
