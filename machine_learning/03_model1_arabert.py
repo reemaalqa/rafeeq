@@ -1,6 +1,6 @@
 
 
-# ── standard library imports ───────────────────────────────────────────────
+# library imports 
 import os
 import sys
 import json
@@ -15,7 +15,7 @@ if hasattr(sys.stdout, "reconfigure"):
     except Exception:
         pass
 
-# ── numerical / plotting / ML libraries ────────────────────────────────────
+# numerical / plotting / ML libraries
 import numpy as np
 import pandas as pd
 import matplotlib
@@ -399,14 +399,13 @@ def main():
     os.makedirs(RESULTS_DIR, exist_ok=True)
     os.makedirs(MODEL1_DIR,  exist_ok=True)
 
-    # Step 1 — load the prepared train/val/test CSVs and encode labels.
+    
     print("Loading data …")
     train_df, val_df, test_df = load_data()
     le = encode_labels(train_df, val_df, test_df)
     print(f"  Train:{len(train_df)}  Val:{len(val_df)}  Test:{len(test_df)}")
 
-    # Step 2 — try AraBERT fine-tuning; fall back to a classical
-    # TF-IDF + LogisticRegression baseline if transformers are unavailable.
+ 
     try:
         import torch
         import transformers
@@ -431,8 +430,7 @@ def main():
     print(f"  Inf. time : {metrics['inference_time_ms']:.2f} ms/sample")
     print(f"  Train time: {metrics['training_time_s']:.1f} s")
 
-    # Step 3 — persist metrics so the comparison and report scripts
-    # can later load them without rerunning training.
+   
     metrics_path = os.path.join(RESULTS_DIR, "model1_metrics.json")
     with open(metrics_path, "w", encoding="utf-8") as f:
         json.dump(metrics, f, ensure_ascii=False, indent=2)
