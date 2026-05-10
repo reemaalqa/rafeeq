@@ -1,17 +1,4 @@
-"""
-03_model1_arabert.py — Model 1: Whisper ASR + AraBERT NLU Intent Classifier.
 
-Attempts to fine-tune aubmindlab/bert-base-arabertv02 for intent
-classification.  If the model download fails (offline / no GPU), falls back
-to a TF-IDF + LogisticRegression baseline and labels all outputs as
-"AraBERT (simulated)".
-
-Outputs:
-  outputs/models/model1_arabert/          — saved model
-  outputs/results/model1_metrics.json    — evaluation metrics
-  outputs/results/model1_confusion_matrix.png
-  outputs/results/model1_per_class.png
-"""
 
 # ── standard library imports ───────────────────────────────────────────────
 import os
@@ -49,15 +36,13 @@ from config import (
     INTENT_CATEGORIES, COLORS, MODEL_LABELS, TRAINING_CONFIG,
 )
 
-# HuggingFace model identifier — AraBERT v02 base, pre-trained on 77 GB
-# of Arabic text (news, Wikipedia, books).  This is what we fine-tune.
+
 MODEL_NAME   = "aubmindlab/bert-base-arabertv02"
 MODEL_LABEL  = "AraBERT"
-MODEL_KEY    = "model1"
-# Prefix used for all output files belonging to Model 1.
+MODEL_KEY    = "model1
 RESULTS_PFX  = os.path.join(RESULTS_DIR, "model1")
 
-# Pull the shared hyperparameters from the central config.
+
 random_seed  = TRAINING_CONFIG["seed"]
 max_len      = TRAINING_CONFIG["max_len"]
 batch_size   = TRAINING_CONFIG["batch_size"]
@@ -74,7 +59,7 @@ except Exception:
     pass
 
 
-# ── data loading ───────────────────────────────────────────────────────────
+# data loading 
 
 def load_data():
     """Load train, val, test splits from CSV files."""
@@ -93,18 +78,10 @@ def encode_labels(train, val, test):
     return le
 
 
-# ── transformer approach ───────────────────────────────────────────────────
+# transformer approach
 
 def train_transformer(train_df, val_df, test_df, le):
-    """
-    Fine-tune AraBERT using HuggingFace Trainer.
-
-    Returns (y_true, y_pred, inference_time_ms, training_time_s,
-             history_dict, model_label)
-    """
-    # Deferred imports: we only import heavy libs (torch, transformers)
-    # inside the training function so the fallback path can still run
-    # on machines where PyTorch is not installed.
+ 
     from transformers import (
         AutoTokenizer, AutoModelForSequenceClassification,
         TrainingArguments, Trainer,
@@ -113,11 +90,9 @@ def train_transformer(train_df, val_df, test_df, le):
     from torch.utils.data import Dataset
 
     class IntentDataset(Dataset):
-        """Minimal PyTorch Dataset wrapping tokenised inputs."""
 
         def __init__(self, texts, labels, tokenizer, max_length):
-            # Tokenise all texts at once (faster than per-sample) and
-            # pad them to a uniform length so they form a tensor.
+         
             self.encodings = tokenizer(
                 texts, truncation=True, padding=True,
                 max_length=max_length, return_tensors="pt",
@@ -136,8 +111,7 @@ def train_transformer(train_df, val_df, test_df, le):
     print(f"  Loading tokenizer: {MODEL_NAME}")
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     num_labels = len(INTENT_CATEGORIES)
-    # Load the base AraBERT with a fresh classification head whose
-    # output size matches the number of intent classes.
+    # Load the base AraBERT with a fresh classification head whos
     print(f"  Loading model: {MODEL_NAME}  ({num_labels} labels)")
     model = AutoModelForSequenceClassification.from_pretrained(
         MODEL_NAME, num_labels=num_labels,
@@ -153,8 +127,7 @@ def train_transformer(train_df, val_df, test_df, le):
     val_ds   = IntentDataset(val_texts,   val_df["label"].tolist(),   tokenizer, max_len)
     test_ds  = IntentDataset(test_texts,  test_df["label"].tolist(),  tokenizer, max_len)
 
-    # Build the HuggingFace TrainingArguments object.  These values
-    # control the optimiser, evaluation strategy, checkpointing, etc.
+    # Build the HuggingFace TrainingArguments objec
     os.makedirs(MODEL1_DIR, exist_ok=True)
     args = TrainingArguments(
         output_dir=MODEL1_DIR,
@@ -209,7 +182,7 @@ def train_transformer(train_df, val_df, test_df, le):
     training_time = time.time() - t0
     print(f"  Training completed in {training_time:.1f}s")
 
-    # Measure inference latency on the held-out test set.
+   
     t1 = time.time()
     preds_output = trainer.predict(test_ds)
     inf_total = time.time() - t1
@@ -228,24 +201,15 @@ def train_transformer(train_df, val_df, test_df, le):
     return y_true, y_pred, inf_ms, training_time, history, MODEL_LABEL
 
 
-# ── fallback TF-IDF + LogisticRegression ──────────────────────────────────
+# fallback TF-IDF + LogisticRegression 
 
 def train_fallback(train_df, val_df, test_df, le):
-    """
-    Fallback when transformer download fails.
-    Trains TF-IDF + LogisticRegression and simulates training history.
-
-    Returns same tuple as train_transformer.
-    """
+  
     from sklearn.feature_extraction.text import TfidfVectorizer
     from sklearn.linear_model import LogisticRegression
     from sklearn.pipeline import Pipeline
 
     print("  [FALLBACK] Using TF-IDF + LogisticRegression (AraBERT simulated)")
-
-    # Classical pipeline: character-level TF-IDF features fed into a
-    # multinomial logistic regression.  This runs on CPU without any
-    # model downloads, making it a reliable offline fallback.
     pipeline = Pipeline([
         ("tfidf", TfidfVectorizer(
             analyzer="char_wb", ngram_range=(2, 5),
@@ -273,7 +237,6 @@ def train_fallback(train_df, val_df, test_df, le):
 
     y_true = test_df["label"].tolist()
 
-    # Simulated learning curves (plausible shape)
     n_steps = max_epochs
     history = {
         "train_loss": [1.8 * np.exp(-0.35 * i) + 0.05 for i in range(n_steps * 4)],
@@ -292,11 +255,9 @@ def train_fallback(train_df, val_df, test_df, le):
     return y_true, y_pred, inf_ms, training_time, history, "AraBERT (simulated)"
 
 
-# ── evaluation & charts ────────────────────────────────────────────────────
+# evaluation & charts
 
 def build_metrics(y_true, y_pred, inf_ms, training_time, le):
-    """Build the metrics dictionary in the standard JSON format."""
-    # Overall classification scores (macro = unweighted average over classes).
     acc   = accuracy_score(y_true, y_pred)
     macro_f1   = f1_score(y_true, y_pred, average="macro", zero_division=0)
     macro_prec = precision_score(y_true, y_pred, average="macro", zero_division=0)
@@ -430,7 +391,7 @@ def save_learning_curves(history, model_label):
     print(f"  [saved] {path}")
 
 
-# ── main ───────────────────────────────────────────────────────────────────
+# main 
 
 def main():
     """Run Model 1 training and evaluation."""
