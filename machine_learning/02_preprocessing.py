@@ -1,16 +1,6 @@
-"""
-02_preprocessing.py — Data preparation for the Rafeeq ML pipeline.
 
-Steps:
-  1. Load SauDial CSV.
-  2. Auto-label Rafeeq intents via keyword matching on the Arabic dialect column.
-  3. Generate a large synthetic dataset of Saudi Arabic voice commands.
-  4. Combine and deduplicate.
-  5. Split 70 / 15 / 15 into train / val / test.
-  6. Save splits to outputs/data/ and produce a distribution chart.
-"""
 
-# ── standard library + env setup ───────────────────────────────────────────
+# ── standard library 
 import os
 import sys
 import random
@@ -24,11 +14,11 @@ if hasattr(sys.stdout, "reconfigure"):
     except Exception:
         pass
 
-# ── third-party imports ────────────────────────────────────────────────────
+# ── third-party imports
 import pandas as pd
 import numpy as np
 import matplotlib
-matplotlib.use("Agg")           # non-interactive backend
+matplotlib.use("Agg")           
 import matplotlib.pyplot as plt
 
 # Allow importing config.py from this script's directory.
@@ -55,7 +45,7 @@ random.seed(RANDOM_SEED)
 np.random.seed(RANDOM_SEED)
 
 
-# ── helpers ────────────────────────────────────────────────────────────────
+# ── helpers
 
 def label_intent(text: str) -> str | None:
     """
@@ -91,14 +81,10 @@ def generate_synthetic_data() -> pd.DataFrame:
 
     Returns a DataFrame with columns ['text', 'intent', 'dialect', 'source'].
     """
-    rows = []
-    # Weighted dialect sampling — Najdi is most common in Saudi speech.
+    rows = [] 
     dialect_weights = [0.35, 0.30, 0.20, 0.15]   # Najdi, Hijazi, Eastern, Janoubi
 
-    # Augmentation prefixes / suffixes in Saudi Arabic.
-    # Adding these to each command produces natural-sounding variations
-    # ("help me" vs "please help me now, my friend") and increases
-    # model robustness to real user phrasing.
+
     prefixes = [
         "رفيق", "يا رفيق", "ابغى", "ممكن", "قولي", "ساعدني",
         "احتاج", "ابغى تساعدني", "", "", "",   # empty = no prefix (higher weight)
@@ -107,7 +93,6 @@ def generate_synthetic_data() -> pd.DataFrame:
         "الحين", "بسرعة", "من فضلك", "يا أخوي", "", "", "",
     ]
 
-    # Loop over every (intent, command) pair defined in config.py.
     for intent, commands in SYNTHETIC_COMMANDS.items():
         for cmd in commands:
             # Add the original command as-is.
@@ -119,20 +104,20 @@ def generate_synthetic_data() -> pd.DataFrame:
                 pre  = random.choice(prefixes)
                 suf  = random.choice(suffixes)
                 text = f"{pre} {cmd} {suf}".strip()
-                # remove double spaces
+               
                 text = " ".join(text.split())
                 dialect = random.choices(DIALECTS, weights=dialect_weights, k=1)[0]
                 rows.append({"text": text, "intent": intent,
                              "dialect": dialect, "source": "synthetic_aug"})
 
-    # Drop exact-text duplicates so the synthetic dataset stays diverse.
+
     df = pd.DataFrame(rows)
     return df.drop_duplicates(subset="text").reset_index(drop=True)
 
 
 def load_and_label_saudial() -> pd.DataFrame:
     """Load the SauDial CSV and return rows that could be auto-labelled."""
-    # Read the raw SauDial CSV using the Windows-Arabic codepage.
+  .
     df = pd.read_csv(DATASET_PATH, encoding=DATASET_ENCODING)
     safe_print(f"  SauDial raw rows: {len(df):,}")
 
@@ -206,29 +191,27 @@ def print_class_distribution(df: pd.DataFrame, title: str = "Class Distribution"
 # ── main ───────────────────────────────────────────────────────────────────
 
 def main() -> None:
-    """Run the full preprocessing pipeline."""
+    
     safe_print("\n=== 02_preprocessing.py -- Data Preparation ===\n")
     os.makedirs(DATA_DIR, exist_ok=True)
 
-    # 1. Load and label SauDial
+
     safe_print("Step 1: Loading and auto-labelling SauDial dataset ...")
     saudial_df = load_and_label_saudial()
 
-    # 2. Synthetic data
+
     safe_print("\nStep 2: Generating synthetic Saudi Arabic commands ...")
     synthetic_df = generate_synthetic_data()
     safe_print(f"  Synthetic rows: {len(synthetic_df):,}")
 
-    # 3. Combine
+
     safe_print("\nStep 3: Combining datasets ...")
     combined = pd.concat([saudial_df, synthetic_df], ignore_index=True)
     combined = combined.drop_duplicates(subset="text").reset_index(drop=True)
     safe_print(f"  Combined unique rows: {len(combined):,}")
     print_class_distribution(combined, "Combined Dataset - Class Distribution")
 
-    # 4. Split into train / val / test in a 70/15/15 ratio.
-    # We use stratified sampling so each split keeps the same intent
-    # distribution as the overall dataset (important for imbalanced classes).
+  
     safe_print("\nStep 4: Splitting into train / val / test (70 / 15 / 15) ...")
     from sklearn.model_selection import train_test_split
 
@@ -251,7 +234,7 @@ def main() -> None:
     safe_print(f"  Val   : {len(val_df):,} rows")
     safe_print(f"  Test  : {len(test_df):,} rows")
 
-    # 5. Save splits
+
     train_path = os.path.join(DATA_DIR, "train.csv")
     val_path   = os.path.join(DATA_DIR, "val.csv")
     test_path  = os.path.join(DATA_DIR, "test.csv")
@@ -262,7 +245,7 @@ def main() -> None:
     safe_print(f"  [saved] {val_path}")
     safe_print(f"  [saved] {test_path}")
 
-    # 6. Distribution chart
+  
     safe_print("\nStep 5: Saving intent distribution chart ...")
     save_distribution_chart(combined)
 
