@@ -1,13 +1,3 @@
-"""
-04_model2_camelbert.py — Model 2: Wav2Vec2 ASR + CAMeL-BERT NLU.
-
-Outputs:
-  outputs/models/model2_camelbert/
-  outputs/results/model2_metrics.json
-  outputs/results/model2_confusion_matrix.png
-  outputs/results/model2_per_class.png
-  outputs/results/model2_learning_curves.png
-"""
 
 import os
 import sys
