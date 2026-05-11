@@ -66,7 +66,7 @@ def generate_synthetic_data() -> pd.DataFrame:
         "احتاج", "ابغى تساعدني", "", "", "",
     ]
     suffixes = [
-        "الحين", "بسرعة", "من فضلك", "يا أخوي", "", "", "",
+        "الحين", "بسرعة", "لوسمحت " "يا أخوي", "", "", "",
     ]
 
     for intent, commands in SYNTHETIC_COMMANDS.items():
