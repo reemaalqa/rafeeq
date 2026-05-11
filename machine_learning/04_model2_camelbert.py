@@ -1,10 +1,6 @@
 """
 04_model2_camelbert.py — Model 2: Wav2Vec2 ASR + CAMeL-BERT NLU.
 
-Attempts to fine-tune CAMeL-Lab/bert-base-arabic-camelbert-mix.
-Falls back to TF-IDF + LogisticRegression labelled as
-"CAMeL-BERT (simulated)" on download failure.
-
 Outputs:
   outputs/models/model2_camelbert/
   outputs/results/model2_metrics.json
@@ -13,7 +9,6 @@ Outputs:
   outputs/results/model2_learning_curves.png
 """
 
-# ── standard library + warnings silencing ─────────────────────────────────
 import os
 import sys
 import json
@@ -27,56 +22,41 @@ if hasattr(sys.stdout, "reconfigure"):
     except Exception:
         pass
 
-# ── third-party data / ML libraries ───────────────────────────────────────
 import numpy as np
 import pandas as pd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import seaborn as sns
-# Scikit-learn provides all the evaluation metrics we need.
 from sklearn.metrics import (
     accuracy_score, f1_score, precision_score, recall_score,
     confusion_matrix,
 )
 from sklearn.preprocessing import LabelEncoder
 
-# Make config.py importable from this script's directory.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from config import (
     DATA_DIR, RESULTS_DIR, MODEL2_DIR, CHART_DPI, CHART_STYLE,
     INTENT_CATEGORIES, COLORS, TRAINING_CONFIG,
 )
 
-# HuggingFace identifier for CAMeL-BERT "mix" — trained on MSA + dialects.
-# CAMeL-BERT is produced by NYUAD's CAMeL Lab and is an alternative Arabic
-# BERT to AraBERT with different pre-training data.
+# CAMeL-BERT mix — trained on MSA + dialects by NYUAD's CAMeL Lab
 MODEL_NAME  = "CAMeL-Lab/bert-base-arabic-camelbert-mix"
 MODEL_LABEL = "CAMeL-BERT"
-# Prefix for every output file from Model 2.
 RESULTS_PFX = os.path.join(RESULTS_DIR, "model2")
 
-# Shared hyperparameters loaded from config.py.
 random_seed = TRAINING_CONFIG["seed"]
 max_len     = TRAINING_CONFIG["max_len"]
 batch_size  = TRAINING_CONFIG["batch_size"]
 lr          = TRAINING_CONFIG["lr"]
 max_epochs  = TRAINING_CONFIG["max_epochs"]
 
-# On CPU, cap epochs so the full pipeline finishes in reasonable time while
-# still fine-tuning for long enough to produce meaningful numbers.
-try:
-    import torch as _torch
-    if not _torch.cuda.is_available():
-        max_epochs = min(max_epochs, 3)
-except Exception:
-    pass
+
 
 
 # ── data ───────────────────────────────────────────────────────────────────
 
 def load_data():
-    """Load train / val / test splits."""
     train = pd.read_csv(os.path.join(DATA_DIR, "train.csv"), encoding="utf-8-sig")
     val   = pd.read_csv(os.path.join(DATA_DIR, "val.csv"),   encoding="utf-8-sig")
     test  = pd.read_csv(os.path.join(DATA_DIR, "test.csv"),  encoding="utf-8-sig")
@@ -84,7 +64,7 @@ def load_data():
 
 
 def encode_labels(train, val, test):
-    """Encode intent strings to integer labels."""
+    # Map intent strings to fixed integer indices
     le = LabelEncoder()
     le.fit(INTENT_CATEGORIES)
     for df in (train, val, test):
@@ -95,9 +75,7 @@ def encode_labels(train, val, test):
 # ── transformer ────────────────────────────────────────────────────────────
 
 def train_transformer(train_df, val_df, test_df, le):
-    """Fine-tune CAMeL-BERT with HuggingFace Trainer."""
-    # Deferred imports so the fallback path works on machines without
-    # torch / transformers installed.
+    # Load tokenizer + CAMeL-BERT + add classification head
     from transformers import (
         AutoTokenizer, AutoModelForSequenceClassification,
         TrainingArguments, Trainer, TrainerCallback,
@@ -106,10 +84,8 @@ def train_transformer(train_df, val_df, test_df, le):
     from torch.utils.data import Dataset
 
     class IntentDataset(Dataset):
-        """Tokenised intent classification dataset."""
-
         def __init__(self, texts, labels, tokenizer, max_length):
-            # Tokenise the whole batch in one call and keep the padded tensors.
+            # Tokenise all texts at once with uniform padding
             self.encodings = tokenizer(
                 texts, truncation=True, padding=True,
                 max_length=max_length, return_tensors="pt",
@@ -125,26 +101,31 @@ def train_transformer(train_df, val_df, test_df, le):
             return item
 
     print(f"  Loading tokenizer: {MODEL_NAME}")
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+    try:
+        tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+    except Exception as e:
+        raise RuntimeError(f"Failed to load tokenizer '{MODEL_NAME}'. Check internet connection.\n{e}")
+
     num_labels = len(INTENT_CATEGORIES)
     print(f"  Loading model: {MODEL_NAME}  ({num_labels} labels)")
-    model = AutoModelForSequenceClassification.from_pretrained(
-        MODEL_NAME, num_labels=num_labels,
-        id2label={i: l for i, l in enumerate(INTENT_CATEGORIES)},
-        label2id={l: i for i, l in enumerate(INTENT_CATEGORIES)},
-    )
+    try:
+        model = AutoModelForSequenceClassification.from_pretrained(
+            MODEL_NAME, num_labels=num_labels,
+            id2label={i: l for i, l in enumerate(INTENT_CATEGORIES)},
+            label2id={l: i for i, l in enumerate(INTENT_CATEGORIES)},
+        )
+    except Exception as e:
+        raise RuntimeError(f"Failed to load model '{MODEL_NAME}'. Check internet connection.\n{e}")
 
-    train_ds = IntentDataset(
-        train_df["text"].fillna("").tolist(), train_df["label"].tolist(), tokenizer, max_len)
-    val_ds = IntentDataset(
-        val_df["text"].fillna("").tolist(),   val_df["label"].tolist(),   tokenizer, max_len)
-    test_ds = IntentDataset(
-        test_df["text"].fillna("").tolist(),  test_df["label"].tolist(),  tokenizer, max_len)
+    train_ds = IntentDataset(train_df["text"].fillna("").tolist(), train_df["label"].tolist(), tokenizer, max_len)
+    val_ds   = IntentDataset(val_df["text"].fillna("").tolist(),   val_df["label"].tolist(),   tokenizer, max_len)
+    test_ds  = IntentDataset(test_df["text"].fillna("").tolist(),  test_df["label"].tolist(),  tokenizer, max_len)
 
     os.makedirs(MODEL2_DIR, exist_ok=True)
     history = {"train_loss": [], "val_loss": [], "train_acc": [], "val_acc": []}
 
     class _HistCB(TrainerCallback):
+        # Record loss at each logging step
         def on_log(self, args, state, control, logs=None, **kwargs):
             if logs:
                 if "loss" in logs:
@@ -152,6 +133,7 @@ def train_transformer(train_df, val_df, test_df, le):
                 if "eval_loss" in logs:
                     history["val_loss"].append(logs["eval_loss"])
 
+    # Training settings: optimizer, eval strategy, checkpointing
     args = TrainingArguments(
         output_dir=MODEL2_DIR,
         num_train_epochs=max_epochs,
@@ -169,22 +151,21 @@ def train_transformer(train_df, val_df, test_df, le):
         no_cuda=not torch.cuda.is_available(),
     )
 
+    # Training loop
     trainer = Trainer(
         model=model, args=args,
         train_dataset=train_ds, eval_dataset=val_ds,
         callbacks=[_HistCB()],
     )
 
-    # Run the full fine-tuning loop.
     t0 = time.time()
     trainer.train()
     training_time = time.time() - t0
 
-    # Measure inference latency on the test set (ms per sample).
+    # Measure inference latency in ms per sample
     t1 = time.time()
     preds_output = trainer.predict(test_ds)
-    inf_total = time.time() - t1
-    inf_ms = (inf_total / len(test_df)) * 1000
+    inf_ms = ((time.time() - t1) / len(test_df)) * 1000
 
     y_pred = np.argmax(preds_output.predictions, axis=1)
     y_true = test_df["label"].tolist()
@@ -194,68 +175,15 @@ def train_transformer(train_df, val_df, test_df, le):
     return y_true, y_pred, inf_ms, training_time, history, MODEL_LABEL
 
 
-# ── fallback ───────────────────────────────────────────────────────────────
-
-def train_fallback(train_df, val_df, test_df, le):
-    """TF-IDF + LogisticRegression fallback for CAMeL-BERT."""
-    from sklearn.feature_extraction.text import TfidfVectorizer
-    from sklearn.linear_model import LogisticRegression
-    from sklearn.pipeline import Pipeline
-
-    print("  [FALLBACK] TF-IDF + LogisticRegression (CAMeL-BERT simulated)")
-
-    # CAMeL-BERT typically scores slightly lower than AraBERT on dialect,
-    # but higher on MSA.  We bias the regularisation slightly differently.
-    pipeline = Pipeline([
-        ("tfidf", TfidfVectorizer(
-            analyzer="char_wb", ngram_range=(2, 5),
-            max_features=60_000, sublinear_tf=True,
-        )),
-        ("clf", LogisticRegression(
-            max_iter=1000, C=4.0,
-            multi_class="multinomial", solver="lbfgs",
-            random_state=random_seed,
-        )),
-    ])
-
-    t0 = time.time()
-    pipeline.fit(
-        train_df["text"].fillna("").tolist(),
-        train_df["label"].tolist(),
-    )
-    training_time = time.time() - t0
-
-    t1 = time.time()
-    y_pred = pipeline.predict(test_df["text"].fillna("").tolist())
-    inf_ms = (time.time() - t1) / max(len(test_df), 1) * 1000
-
-    y_true = test_df["label"].tolist()
-
-    n_steps = max_epochs
-    history = {
-        "train_loss": [1.9 * np.exp(-0.32 * i) + 0.06 for i in range(n_steps * 4)],
-        "val_loss":   [2.1 * np.exp(-0.25 * i) + 0.09 for i in range(n_steps * 4)],
-        "train_acc":  [min(0.97, 0.48 + 0.046 * i) for i in range(n_steps * 4)],
-        "val_acc":    [min(0.93, 0.42 + 0.040 * i) for i in range(n_steps * 4)],
-    }
-
-    import pickle
-    os.makedirs(MODEL2_DIR, exist_ok=True)
-    with open(os.path.join(MODEL2_DIR, "pipeline.pkl"), "wb") as f:
-        pickle.dump(pipeline, f)
-
-    return y_true, y_pred, inf_ms, training_time, history, "CAMeL-BERT (simulated)"
-
-
 # ── evaluation & charts ────────────────────────────────────────────────────
 
 def build_metrics(y_true, y_pred, inf_ms, training_time, le):
-    """Compute and return metrics dict."""
-    acc  = accuracy_score(y_true, y_pred)
-    mf1  = f1_score(y_true, y_pred, average="macro", zero_division=0)
+    acc   = accuracy_score(y_true, y_pred)
+    mf1   = f1_score(y_true, y_pred, average="macro", zero_division=0)
     mprec = precision_score(y_true, y_pred, average="macro", zero_division=0)
     mrec  = recall_score(y_true, y_pred, average="macro", zero_division=0)
 
+    # Per-class scores using one-vs-rest
     per_class = {}
     for i, intent in enumerate(INTENT_CATEGORIES):
         yi_true = (np.array(y_true) == i).astype(int)
@@ -270,19 +198,18 @@ def build_metrics(y_true, y_pred, inf_ms, training_time, le):
     cm = confusion_matrix(y_true, y_pred, labels=list(range(len(INTENT_CATEGORIES))))
 
     return {
-        "accuracy":        round(acc, 4),
-        "macro_f1":        round(mf1, 4),
-        "macro_precision": round(mprec, 4),
-        "macro_recall":    round(mrec, 4),
-        "per_class":       per_class,
-        "inference_time_ms":  round(inf_ms, 4),
-        "training_time_s":    round(training_time, 2),
-        "confusion_matrix": cm.tolist(),
+        "accuracy":          round(acc, 4),
+        "macro_f1":          round(mf1, 4),
+        "macro_precision":   round(mprec, 4),
+        "macro_recall":      round(mrec, 4),
+        "per_class":         per_class,
+        "inference_time_ms": round(inf_ms, 4),
+        "training_time_s":   round(training_time, 2),
+        "confusion_matrix":  cm.tolist(),
     }
 
 
 def save_confusion_matrix(cm_data, model_label):
-    """Save confusion matrix chart."""
     try:
         plt.style.use(CHART_STYLE)
     except OSError:
@@ -305,24 +232,21 @@ def save_confusion_matrix(cm_data, model_label):
 
 
 def save_per_class_chart(per_class, model_label):
-    """Save per-class F1/Precision/Recall chart."""
     try:
         plt.style.use(CHART_STYLE)
     except OSError:
         pass
-    intents = INTENT_CATEGORIES
-    f1s  = [per_class[i]["f1"]        for i in intents]
-    prec = [per_class[i]["precision"] for i in intents]
-    rec  = [per_class[i]["recall"]    for i in intents]
+    f1s  = [per_class[i]["f1"]        for i in INTENT_CATEGORIES]
+    prec = [per_class[i]["precision"] for i in INTENT_CATEGORIES]
+    rec  = [per_class[i]["recall"]    for i in INTENT_CATEGORIES]
 
-    x = np.arange(len(intents))
-    w = 0.27
+    x, w = np.arange(len(INTENT_CATEGORIES)), 0.27
     fig, ax = plt.subplots(figsize=(16, 7))
     ax.bar(x - w, f1s,  w, label="F1",       color=COLORS["model1"], edgecolor="white")
     ax.bar(x,     prec, w, label="Precision", color=COLORS["model2"], edgecolor="white")
     ax.bar(x + w, rec,  w, label="Recall",    color=COLORS["model3"], edgecolor="white")
     ax.set_xticks(x)
-    ax.set_xticklabels(intents, rotation=35, ha="right", fontsize=10)
+    ax.set_xticklabels(INTENT_CATEGORIES, rotation=35, ha="right", fontsize=10)
     ax.set_ylim(0, 1.15)
     ax.set_ylabel("Score", fontsize=12)
     ax.set_title(f"Per-Class Metrics — {model_label}", fontsize=14, fontweight="bold", pad=14)
@@ -336,70 +260,25 @@ def save_per_class_chart(per_class, model_label):
     print(f"  [saved] {path}")
 
 
-def save_learning_curves(history, model_label):
-    """Save loss and accuracy learning curves."""
-    try:
-        plt.style.use(CHART_STYLE)
-    except OSError:
-        pass
-    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
-    if history["train_loss"]:
-        axes[0].plot(history["train_loss"], label="Train Loss", color=COLORS["model2"])
-    if history["val_loss"]:
-        axes[0].plot(history["val_loss"],   label="Val Loss",   color=COLORS["model3"])
-    axes[0].set_title("Loss Curve")
-    axes[0].set_xlabel("Step")
-    axes[0].set_ylabel("Loss")
-    axes[0].legend()
-    axes[0].spines["top"].set_visible(False)
-    axes[0].spines["right"].set_visible(False)
-
-    if history["train_acc"]:
-        axes[1].plot(history["train_acc"], label="Train Acc", color=COLORS["model2"])
-    if history["val_acc"]:
-        axes[1].plot(history["val_acc"],   label="Val Acc",   color=COLORS["model3"])
-    axes[1].set_title("Accuracy Curve")
-    axes[1].set_xlabel("Step")
-    axes[1].set_ylabel("Accuracy")
-    axes[1].set_ylim(0, 1.05)
-    axes[1].legend()
-    axes[1].spines["top"].set_visible(False)
-    axes[1].spines["right"].set_visible(False)
-
-    fig.suptitle(f"Learning Curves — {model_label}", fontsize=14, fontweight="bold")
-    fig.tight_layout()
-    path = f"{RESULTS_PFX}_learning_curves.png"
-    fig.savefig(path, dpi=CHART_DPI, bbox_inches="tight")
-    plt.close(fig)
-    print(f"  [saved] {path}")
 
 
 # ── main ───────────────────────────────────────────────────────────────────
 
 def main():
-    """Run Model 2 training and evaluation."""
     print("\n=== 04_model2_camelbert.py — Wav2Vec2 + CAMeL-BERT Pipeline ===\n")
     os.makedirs(RESULTS_DIR, exist_ok=True)
     os.makedirs(MODEL2_DIR,  exist_ok=True)
 
-    # Step 1 — load prepared data and encode intent labels.
+    # Load data and encode labels
     print("Loading data …")
     train_df, val_df, test_df = load_data()
     le = encode_labels(train_df, val_df, test_df)
     print(f"  Train:{len(train_df)}  Val:{len(val_df)}  Test:{len(test_df)}")
 
-    # Step 2 — attempt CAMeL-BERT fine-tuning; fall back to TF-IDF if needed.
-    try:
-        import torch
-        import transformers
-        print(f"\nAttempting to load HuggingFace model: {MODEL_NAME} …")
-        result = train_transformer(train_df, val_df, test_df, le)
-    except Exception as exc:
-        print(f"\n  [WARN] Transformer training failed: {exc}")
-        print("  Falling back to TF-IDF + LogisticRegression …\n")
-        result = train_fallback(train_df, val_df, test_df, le)
-
+    # Train the model
+    print(f"\nLoading HuggingFace model: {MODEL_NAME} …")
+    result = train_transformer(train_df, val_df, test_df, le)
     y_true, y_pred, inf_ms, training_time, history, used_label = result
 
     print(f"\nEvaluating {used_label} …")
@@ -413,6 +292,7 @@ def main():
     print(f"  Recall    : {metrics['macro_recall']:.4f}")
     print(f"  Inf. time : {metrics['inference_time_ms']:.2f} ms/sample")
 
+    # Save metrics — used later by comparison and report scripts
     metrics_path = os.path.join(RESULTS_DIR, "model2_metrics.json")
     with open(metrics_path, "w", encoding="utf-8") as f:
         json.dump(metrics, f, ensure_ascii=False, indent=2)
@@ -420,7 +300,6 @@ def main():
 
     save_confusion_matrix(metrics["confusion_matrix"], used_label)
     save_per_class_chart(metrics["per_class"], used_label)
-    save_learning_curves(history, used_label)
 
     print(f"\nModel 2 ({used_label}) complete.\n")
 
