@@ -1,3 +1,4 @@
+
 # library imports 
 import os
 import sys
@@ -41,13 +42,7 @@ batch_size  = TRAINING_CONFIG["batch_size"]
 lr          = TRAINING_CONFIG["lr"]
 max_epochs  = TRAINING_CONFIG["max_epochs"]
 
-# Cap epochs on CPU to keep runtime reasonable
-try:
-    import torch as _torch
-    if not _torch.cuda.is_available():
-        max_epochs = min(max_epochs, 3)
-except Exception:
-    pass
+
 
 
 # data loading
@@ -97,14 +92,21 @@ def train_transformer(train_df, val_df, test_df, le):
             return item
 
     print(f"  Loading tokenizer: {MODEL_NAME}")
-    tokenizer  = AutoTokenizer.from_pretrained(MODEL_NAME)
+    try:
+        tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+    except Exception as e:
+        raise RuntimeError(f"Failed to load tokenizer '{MODEL_NAME}'. Check internet connection.\n{e}")
+
     num_labels = len(INTENT_CATEGORIES)
     print(f"  Loading model: {MODEL_NAME}  ({num_labels} labels)")
-    model = AutoModelForSequenceClassification.from_pretrained(
-        MODEL_NAME, num_labels=num_labels,
-        id2label={i: l for i, l in enumerate(INTENT_CATEGORIES)},
-        label2id={l: i for i, l in enumerate(INTENT_CATEGORIES)},
-    )
+    try:
+        model = AutoModelForSequenceClassification.from_pretrained(
+            MODEL_NAME, num_labels=num_labels,
+            id2label={i: l for i, l in enumerate(INTENT_CATEGORIES)},
+            label2id={l: i for i, l in enumerate(INTENT_CATEGORIES)},
+        )
+    except Exception as e:
+        raise RuntimeError(f"Failed to load model '{MODEL_NAME}'. Check internet connection.\n{e}")
 
     train_ds = IntentDataset(train_df["text"].fillna("").tolist(), train_df["label"].tolist(), tokenizer, max_len)
     val_ds   = IntentDataset(val_df["text"].fillna("").tolist(),   val_df["label"].tolist(),   tokenizer, max_len)
@@ -262,42 +264,7 @@ def save_per_class_chart(per_class, model_label):
     print(f"  [saved] {path}")
 
 
-def save_learning_curves(history, model_label):
-    try:
-        plt.style.use(CHART_STYLE)
-    except OSError:
-        pass
-    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
-    if history["train_loss"]:
-        axes[0].plot(history["train_loss"], label="Train Loss", color=COLORS["model1"])
-    if history["val_loss"]:
-        axes[0].plot(history["val_loss"],   label="Val Loss",   color=COLORS["model3"])
-    axes[0].set_title("Loss Curve", fontsize=13, fontweight="bold")
-    axes[0].set_xlabel("Step")
-    axes[0].set_ylabel("Loss")
-    axes[0].legend()
-    axes[0].spines["top"].set_visible(False)
-    axes[0].spines["right"].set_visible(False)
-
-    if history["train_acc"]:
-        axes[1].plot(history["train_acc"], label="Train Acc", color=COLORS["model1"])
-    if history["val_acc"]:
-        axes[1].plot(history["val_acc"],   label="Val Acc",   color=COLORS["model3"])
-    axes[1].set_title("Accuracy Curve", fontsize=13, fontweight="bold")
-    axes[1].set_xlabel("Step")
-    axes[1].set_ylabel("Accuracy")
-    axes[1].set_ylim(0, 1.05)
-    axes[1].legend()
-    axes[1].spines["top"].set_visible(False)
-    axes[1].spines["right"].set_visible(False)
-
-    fig.suptitle(f"Learning Curves — {model_label}", fontsize=14, fontweight="bold", y=1.02)
-    fig.tight_layout()
-    path = f"{RESULTS_PFX}_learning_curves.png"
-    fig.savefig(path, dpi=CHART_DPI, bbox_inches="tight")
-    plt.close(fig)
-    print(f"  [saved] {path}")
 
 
 # main
@@ -338,7 +305,6 @@ def main():
 
     save_confusion_matrix(metrics["confusion_matrix"], used_label)
     save_per_class_chart(metrics["per_class"], used_label)
-    save_learning_curves(history, used_label)
 
     print(f"\nModel 1 ({used_label}) complete.\n")
 
