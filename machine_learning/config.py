@@ -1,27 +1,4 @@
-"""
-config.py — Central configuration for the Rafeeq ML Comparison Pipeline.
 
-Defines paths, intent categories, keyword dictionaries, ASR benchmarks,
-training hyperparameters, and visual styling constants used across all scripts.
-
-This module is imported by every other script in the project so that all
-scripts share consistent settings (e.g. where to save outputs, how many
-intent classes exist, which colors to use for each model).  Centralising
-these values here makes the whole pipeline easy to reconfigure in one
-place.
-"""
-
-# Standard library import — only `os` is needed to build file paths
-# in a cross-platform way (Windows, Linux, macOS).
-import os
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Paths
-# ─────────────────────────────────────────────────────────────────────────────
-
-# BASE_DIR is the absolute path to the folder containing this file.
-# All other paths are built relative to it so the project can be moved
-# anywhere on disk without breaking.
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Path to the raw SauDial CSV (input data for the whole pipeline).
@@ -35,12 +12,10 @@ DATASET_ENCODING = "cp1256"
 # will be saved under sub-directories of this location.
 OUTPUTS_DIR     = os.path.join(BASE_DIR, "outputs")
 # Sub-directories for each stage of the pipeline.
-EDA_DIR         = os.path.join(OUTPUTS_DIR, "eda")          # Exploratory data analysis charts
+EDA_DIR         = os.path.join(OUTPUTS_DIR, "eda")          
 DATA_DIR        = os.path.join(OUTPUTS_DIR, "data")         # Prepared train/val/test CSV files
 MODELS_DIR      = os.path.join(OUTPUTS_DIR, "models")       # Saved model weights
-RESULTS_DIR     = os.path.join(OUTPUTS_DIR, "results")      # Per-model metrics and charts
-COMPARISON_DIR  = os.path.join(OUTPUTS_DIR, "comparison")   # Cross-model comparison charts
-REPORT_DIR      = os.path.join(OUTPUTS_DIR, "report")       # Final HTML report
+
 
 # Standard 70 / 15 / 15 split file paths used by training scripts.
 TRAIN_PATH = os.path.join(DATA_DIR, "train.csv")
@@ -59,16 +34,7 @@ METRICS1_PATH = os.path.join(RESULTS_DIR, "model1_metrics.json")
 METRICS2_PATH = os.path.join(RESULTS_DIR, "model2_metrics.json")
 
 
-
-
-# ─────────────────────────────────────────────────────────────────────────────
 # Intent Categories
-# ─────────────────────────────────────────────────────────────────────────────
-# The 10 classes the NLU models learn to predict.  These categories cover
-# typical needs of an elderly Saudi user talking to a voice assistant
-# (emergencies, prayer times, medication reminders, diet, Quran, etc.).
-# The order matters — label encoders use this list as the canonical order
-# so label index 0 = "emergency", 1 = "prayer_time", and so on.
 
 INTENT_CATEGORIES = [
     "emergency",
@@ -83,8 +49,7 @@ INTENT_CATEGORIES = [
     "general",
 ]
 
-# Arabic (human-readable) names for each intent, used in charts and
-# the HTML report for users who prefer Arabic labels.
+# Arabic (human-readable) names for each intent, used in charts 
 INTENT_LABELS_AR = {
     "emergency":      "طوارئ",
     "prayer_time":    "أوقات الصلاة",
@@ -102,12 +67,6 @@ INTENT_LABELS_AR = {
 # Saudi Arabic Keyword Dictionaries (per intent)
 # Used for auto-labelling the SauDial dataset rows.
 # ─────────────────────────────────────────────────────────────────────────────
-# For each intent, we list Saudi Arabic keywords/phrases that strongly
-# suggest the sentence belongs to that intent.  The preprocessing script
-# scores each SauDial row by counting keyword matches and assigns the
-# highest-scoring intent as the row's label.  This is a simple but
-# effective rule-based weak labeller that bootstraps a training set
-# without manual annotation.
 
 INTENT_KEYWORDS = {
     "emergency": [
@@ -265,25 +224,23 @@ SYNTHETIC_COMMANDS = {
     ],
     "diet": [
         " أكل اليوم", "ابغى خطة غذائيه ", "جوعان وش فيه",
-       "عشاي اليوم ", "رجيم مناسب لي", "أكلة صحية للسكري",
-        "ممنوع عليّ آكل إيش", "وش أشرب الحين", "كاس مويه كافي",
-        "فطور صحي ايش آكل", "غداء خفيف", "عشاء صغير",
-        "أكلة للضغط", "غداي ايش", "أكل يقلل الكوليسترول",
-        "وصفة صحية سهلة", "طبخة ", "وش يناسب الكبار",
-        "شوربةالدجاج فيه كالوري كم", "التمر فيه سكر كثير",
-        "الأرز أبيض ولا بني", "لبن يومي مناسب",
-        "فاكهة لمرض للسكري", "الموز مسموح أكله", "التفاح في الصبح",
+       "عشاي اليوم ", "رجيم مناسب لي", "أكل صحي للسكري",
+        "ممنوع عليّ آكل إيش", "وش أشرب الحين", "يكفيني كاس مويه",
+        "عطني فطور صحي ", "غداء خفيف", "غذاي اليوم ايش  ",
+        "أكلة للضغط", "غداي ايش", "أكله فيها الكوليسترول قليل ",
+        "طبخه صحية سهلة", "طبخة ", "وش يناسب الكبار",
+        "شوربةالدجاج جيده؟", "التمر فيه سكر كثير",
+        " رز أبيض ولا بني", "ابغى لبن",
+        "فاكهة لمرض السكري", "الموز مسموح أكله", " زين التفاح في الصبح",
         " كيف اسوي خضار ", "سلطة للفطور",
         "زيت الزيتون مفيد", "ملح قليل ",
         "وش أشرب غير الماء", "عصير طبيعي للضغط",
         "أكلة بدون سكر ", "حلى صحي بدون سكر",
-        "بروتين يومي كم جرام", "دجاج مشوي بدون جلد",
         "سمك أسبوعياً كم اخذه مرة", "كمية الملح اليومية",
-        "الأكل والدواء الترتيب", "خطة أكل لي رمضان",
-        "السحور ايش أكل", "الإفطار الصحي في رمضان",
+        "السحور ايش أكل", "اعطني فطور صحي لرمضان",
         "الأكل بعد العملية", "اكل خفيف للمعدة",
-        "ألم المعدة وش أكل", "الإمساك وش يساعد",
-        "الإسهال وش أكل","ابي اكل لذيذ", 
+        "معدتي توجعني عطني اكل خفيفه ", "الإمساك وش يساعد",
+        "الإسهال وش أكل","ابي اكل لذيذ", "بطني يعورني عطني اكل خفيف اكله"
         "المريض ما يأكل إيش أسوي", "تعبت من الأكل المكرر",
     ],
     "reminders": [
@@ -296,9 +253,9 @@ SYNTHETIC_COMMANDS = {
         "المنبه ما صحاني", "فعّل التنبيهات", "وقفت التنبيهات",
         "ذكرني بصلاة المغرب", "موعد غسيل الكلى",
         "ذكرني بالعلاج الطبيعي", "جلسة العلاج متى",
-        "ذكرني ازهم بأولادي", "موعد التحاليل",
-        "ذكرني بي الفحص الدوري", "الكشف الدوري موعده",
-        "ذكرني أشتري الدواء", "قائمة المشتريات",
+        "ذكرني ازهم على عيالي", "موعد التحاليل",
+        "ذكرني بي الفحص الدوري حق سياره","ذكرني ادق على بنتي",
+        "ذكرني أشتري الدواء", "ذكرني اشتري مقاضي ",
         "ذكرني بعيد ميلاد حفيدي", "عزيمه قريبة",
         "ذكرني أزور الأهل", "ذكرني ازور اخوياي",
         "تذكير يومي بالماء", "شرب الماء كل ساعة",
@@ -306,7 +263,7 @@ SYNTHETIC_COMMANDS = {
         "ذكرني أقيس الضغط", "قياس السكر كل يوم",
         "متى موعد صرف الراتب", "نذكرني اسدد الفواتير",
         "اشتراك طبي متى يتجدد", "ذكرني بجواز السفر",
-        "تذكير بمراجعة البنك", "ذكرني أدفع الفاتورة",
+        "لاتنسى تعلمني  اراجع البنك", "ذكرني أدفع الفاتورة",
         "ذكرني اروح الطبيب", "نتيجة التحاليل متى",
         "ذكرني اتصل بالصيدلية", "ذكرني أحجز موعد",
         "ذكرني أجلس مع العيال", "ذكرني أصلي الضحى",
@@ -495,12 +452,12 @@ TRAINING_CONFIG = {
 # visually coherent.
 
 COLORS = {
-    'model1':   '#2E7D32',   # Deep green  — Whisper + AraBERT
-    'model2':   '#1976D2',   # Deep blue   — Wav2Vec2 + CAMeL-BERT
+    'model1':   '#2E7D32',   # Deep green  —  AraBERT
+    'model2':   '#1976D2',   # Deep blue   — CAMeL-BERT
     'baseline': '#757575',   # Grey        — baseline reference
 }
 
-# Human-readable names of the three end-to-end pipelines compared
+
 # in this project.  Used in titles, legends, and tables.
 MODEL_LABELS = {
     'model1': 'Whisper + AraBERT',
@@ -520,8 +477,8 @@ DIALECTS = ['Najdi', 'Hijazi', 'Eastern', 'Janoubi/Southern']
 # and resource efficiency so that both quality and practicality are
 # taken into account in the final recommendation.
 COMPOSITE_WEIGHTS = {
-    'accuracy':   0.40,  # weight on raw NLU accuracy
-    'speed':      0.30,  # weight on inference speed (latency)
-    'dialect':    0.20,  # weight on dialect coverage quality
-    'resource':   0.10,  # weight on model size / VRAM footprint
+    'accuracy':   0.40,  
+    'speed':      0.30,  
+    'dialect':    0.20,  
+    'resource':   0.10,  t
 }
