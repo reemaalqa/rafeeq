@@ -33,8 +33,8 @@ class AppConstants {
   // Replace with your key from aistudio.google.com, or pass via
   // --dart-define=GEMINI_API_KEY=your_key
   static const String geminiApiKey = String.fromEnvironment(
-    'AIzaSyCcM4hU7AuTDuiqQNYK6VNEzWKZbY-6RDo',
-    defaultValue: 'AIzaSyCcM4hU7AuTDuiqQNYK6VNEzWKZbY-6RDo',
+    'AIzaSyDJIQNfiZ_XWWGrzVBtmzEg20EHMIfD_Mo',
+    defaultValue: 'AIzaSyDJIQNfiZ_XWWGrzVBtmzEg20EHMIfD_Mo',
   );
 
   // Google Cloud Text-to-Speech
