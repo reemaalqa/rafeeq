@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import '../../domain/entities/place.dart';
 import '../../domain/usecases/get_current_location.dart';
 import '../../domain/usecases/get_places_by_category.dart';
@@ -60,11 +61,45 @@ class LocationsCubit extends Cubit<LocationsState> {
       (places) => emit(
         state.copyWith(
           status: LocationsStatus.loaded,
-          places: places,
+          places: _preparePlacesForDisplay(category, places),
         ),
       ),
     );
   }
+
+
+  List<Place> _preparePlacesForDisplay(
+    PlaceCategory category,
+    List<Place> places,
+  ) {
+    if (category != PlaceCategory.mosque && category != PlaceCategory.hospital) {
+      return places;
+    }
+
+    final sorted = List<Place>.from(places);
+    final position = state.currentPosition;
+    if (position != null) {
+      sorted.sort((a, b) {
+        final aDistance = Geolocator.distanceBetween(
+          position.latitude,
+          position.longitude,
+          a.latitude,
+          a.longitude,
+        );
+        final bDistance = Geolocator.distanceBetween(
+          position.latitude,
+          position.longitude,
+          b.latitude,
+          b.longitude,
+        );
+        return aDistance.compareTo(bDistance);
+      });
+    }
+
+    return sorted.take(20).toList(growable: false);
+  }
+
+  
 
   /// Opens Google Maps directions to [place] via the system browser or Maps
   /// app.  Errors are swallowed because a failed launch should not block the
