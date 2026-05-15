@@ -51,7 +51,29 @@ class LocationsRepositoryImpl implements LocationsRepository {
   Future<Either<Failure, List<Place>>> getPlacesByCategory(
     PlaceCategory category,
   ) async {
-    // Try remote saved locations filtered by type
+    if (category == PlaceCategory.hospital) {
+      try {
+        final hospitals = await _local.getPlacesByCategory(category);
+        return Right(hospitals);
+      } on CacheException catch (e) {
+        return Left(CacheFailure(e.message));
+      } catch (_) {
+        return const Left(CacheFailure('Failed to load hospitals'));
+      }
+    }
+
+    if (category == PlaceCategory.mosque) {
+      try {
+        final mosques = await _local.getPlacesByCategory(category);
+        return Right(mosques);
+      } on CacheException catch (e) {
+        return Left(CacheFailure(e.message));
+      } catch (_) {
+        return const Left(CacheFailure('Failed to load mosques'));
+      }
+    }
+    
+    // Keep all other categories on the existing local fallback path.
     try {
       final data = await _remote.getSavedLocations(
         locationType: _categoryToString(category),
