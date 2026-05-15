@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import '../../../../core/error/exceptions.dart';
 import '../../../../core/firebase/firebase_helpers.dart';
 
 abstract class LocationsRemoteDataSource {
