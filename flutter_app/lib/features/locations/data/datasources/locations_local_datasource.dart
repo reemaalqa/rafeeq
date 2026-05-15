@@ -17,12 +17,14 @@ abstract class LocationsLocalDatasource {
 class LocationsLocalDatasourceImpl implements LocationsLocalDatasource {
   const LocationsLocalDatasourceImpl();
 
+  static const String _mosqueAssetPath = 'assets/data/riyadh-mosque.json';
+
   // ---------------------------------------------------------------------------
   // Static hardcoded Riyadh places data (offline-first, no API key required)
   // ---------------------------------------------------------------------------
 
   static const List<PlaceModel> _allPlaces = [
-    // ── Mosques ───────────────────────────────────────────────────────────────
+    // ── Mosques fallback ──────────────────────────────────────────────────────
     PlaceModel(
       id: 'mosque_001',
       name: 'المسجد الحرام',
@@ -52,7 +54,7 @@ class LocationsLocalDatasourceImpl implements LocationsLocalDatasource {
       address: 'حي البطحاء، وسط الرياض',
     ),
 
-    // ── Hospitals ─────────────────────────────────────────────────────────────
+    // ── Hospitals fallback ────────────────────────────────────────────────────
     PlaceModel(
       id: 'hospital_001',
       name: 'مستشفى الملك فيصل التخصصي',
@@ -216,7 +218,12 @@ class LocationsLocalDatasourceImpl implements LocationsLocalDatasource {
 
   @override
   Future<List<PlaceModel>> getPlacesByCategory(PlaceCategory category) async {
-    try {
+      try {
+      if (category == PlaceCategory.mosque) {
+        final mosques = await _getMosquesFromAsset();
+        if (mosques.isNotEmpty) return mosques;
+      }
+
       return _allPlaces
           .where((place) => place.category == category)
           .toList(growable: false);
@@ -226,6 +233,90 @@ class LocationsLocalDatasourceImpl implements LocationsLocalDatasource {
       );
     }
   }
+
+    Future<List<PlaceModel>> _getMosquesFromAsset() async {
+    try {
+      final raw = await rootBundle.loadString(_mosqueAssetPath);
+      final decoded = jsonDecode(raw);
+      final rows = _extractList(decoded);
+
+      final mosques = <PlaceModel>[];
+      for (var i = 0; i < rows.length; i++) {
+        final row = rows[i];
+        if (row is! Map) continue;
+        final map = Map<String, dynamic>.from(row);
+        final coords = _parsePointShape(map['SHAPE']);
+        if (coords == null) continue;
+
+        final name = _clean(map['FEATURE_ANAME']) ?? 'مسجد';
+        final neighborhood = _clean(map['NEIGHBORHANAME']);
+        final municipality = _clean(map['MUNICIPALITYANAME']);
+        final mosqueType = _clean(map['RELIGIOUSSERVICESTYPE_DESC']);
+        final addressParts = <String>[
+          if (mosqueType != null) mosqueType,
+          if (neighborhood != null) neighborhood,
+          if (municipality != null) municipality,
+        ];
+
+        mosques.add(
+          PlaceModel(
+            id: 'mosque_${i + 1}',
+            name: name,
+            nameAr: name,
+            category: PlaceCategory.mosque,
+            latitude: coords.latitude,
+            longitude: coords.longitude,
+            address: addressParts.isEmpty ? 'الرياض' : addressParts.join('، '),
+          ),
+        );
+      }
+
+      return mosques;
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  List<dynamic> _extractList(dynamic decoded) {
+    if (decoded is List) return decoded;
+    if (decoded is Map) {
+      for (final key in const ['data', 'Data', 'items', 'Items', 'features', 'Features']) {
+        final value = decoded[key];
+        if (value is List) return value;
+      }
+      for (final value in decoded.values) {
+        if (value is List) return value;
+      }
+    }
+    return const [];
+  }
+
+  _Coordinates? _parsePointShape(dynamic rawShape) {
+    final shape = _clean(rawShape);
+    if (shape == null) return null;
+
+    final match = RegExp(
+      r'POINT\s*\(\s*([-+]?\d+(?:\.\d+)?)\s+([-+]?\d+(?:\.\d+)?)\s*\)',
+      caseSensitive: false,
+    ).firstMatch(shape);
+    if (match == null) return null;
+
+    final longitude = double.tryParse(match.group(1) ?? '');
+    final latitude = double.tryParse(match.group(2) ?? '');
+    if (latitude == null || longitude == null) return null;
+    if (!_validLatitude(latitude) || !_validLongitude(longitude)) return null;
+
+    return _Coordinates(latitude: latitude, longitude: longitude);
+  }
+
+  String? _clean(dynamic value) {
+    final text = value?.toString().trim();
+    if (text == null || text.isEmpty || text.toLowerCase() == 'null') return null;
+    return text;
+  }
+
+  bool _validLatitude(double value) => value >= -90 && value <= 90;
+  bool _validLongitude(double value) => value >= -180 && value <= 180;
 
   @override
   Future<Position> getCurrentLocation() async {
@@ -262,4 +353,11 @@ class LocationsLocalDatasourceImpl implements LocationsLocalDatasource {
       );
     }
   }
+}
+
+class _Coordinates {
+  final double latitude;
+  final double longitude;
+
+  const _Coordinates({required this.latitude, required this.longitude});
 }
