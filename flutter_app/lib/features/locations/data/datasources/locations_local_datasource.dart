@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../domain/entities/place.dart';
@@ -18,6 +21,7 @@ class LocationsLocalDatasourceImpl implements LocationsLocalDatasource {
   const LocationsLocalDatasourceImpl();
 
   static const String _mosqueAssetPath = 'assets/data/riyadh-mosque.json';
+  static const String _hospitalAssetPath = 'assets/data/hospitals.json';
 
   // ---------------------------------------------------------------------------
   // Static hardcoded Riyadh places data (offline-first, no API key required)
@@ -218,10 +222,15 @@ class LocationsLocalDatasourceImpl implements LocationsLocalDatasource {
 
   @override
   Future<List<PlaceModel>> getPlacesByCategory(PlaceCategory category) async {
-      try {
+    try {
       if (category == PlaceCategory.mosque) {
         final mosques = await _getMosquesFromAsset();
         if (mosques.isNotEmpty) return mosques;
+      }
+
+      if (category == PlaceCategory.hospital) {
+        final hospitals = await _getHospitalsFromAsset();
+        if (hospitals.isNotEmpty) return hospitals;
       }
 
       return _allPlaces
@@ -234,7 +243,48 @@ class LocationsLocalDatasourceImpl implements LocationsLocalDatasource {
     }
   }
 
-    Future<List<PlaceModel>> _getMosquesFromAsset() async {
+  Future<List<PlaceModel>> _getHospitalsFromAsset() async {
+    try {
+      final raw = await rootBundle.loadString(_hospitalAssetPath);
+      final decoded = jsonDecode(raw);
+      final rows = _extractList(decoded);
+
+      final hospitals = <PlaceModel>[];
+      for (var i = 0; i < rows.length; i++) {
+        final row = rows[i];
+        if (row is! Map) continue;
+        final map = Map<String, dynamic>.from(row);
+
+        final latitude = _readDouble(map, const ['Latitude', 'latitude', 'Lat', 'lat']);
+        final longitude = _readDouble(map, const ['Longitude', 'longitude', 'Long', 'long', 'Lng', 'lng']);
+        if (!_validCoordinates(latitude, longitude)) continue;
+
+        final name = _clean(map['Name']) ?? _clean(map['EnglishName']) ?? 'مستشفى';
+        final city = _clean(map['City']) ?? 'الرياض';
+        final phone = _clean(map['Phone']);
+        final id = _clean(map['ID']) ?? 'hospital_${i + 1}';
+
+        hospitals.add(
+          PlaceModel(
+            id: 'hospital_$id',
+            name: name,
+            nameAr: name,
+            category: PlaceCategory.hospital,
+            latitude: latitude!,
+            longitude: longitude!,
+            address: city,
+            phone: phone,
+          ),
+        );
+      }
+
+      return hospitals;
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  Future<List<PlaceModel>> _getMosquesFromAsset() async {
     try {
       final raw = await rootBundle.loadString(_mosqueAssetPath);
       final decoded = jsonDecode(raw);
@@ -289,6 +339,25 @@ class LocationsLocalDatasourceImpl implements LocationsLocalDatasource {
       }
     }
     return const [];
+  }
+
+  double? _readDouble(Map<String, dynamic> row, List<String> keys) {
+    for (final key in keys) {
+      final value = row[key];
+      if (value is num) return value.toDouble();
+      if (value is String) {
+        final parsed = double.tryParse(value.trim());
+        if (parsed != null) return parsed;
+      }
+    }
+    return null;
+  }
+
+  bool _validCoordinates(double? latitude, double? longitude) {
+    if (latitude == null || longitude == null) return false;
+    if (latitude == 0 && longitude == 0) return false;
+    if (latitude == -1 || longitude == -1) return false;
+    return _validLatitude(latitude) && _validLongitude(longitude);
   }
 
   _Coordinates? _parsePointShape(dynamic rawShape) {
