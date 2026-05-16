@@ -26,7 +26,7 @@ class _PreferencesOnboardingPageState extends State<PreferencesOnboardingPage> {
   String? _replyLength;      // "short" | "long"
   String? _explanationStyle; // "simple" | "detailed"
   bool? _wantsExamples;
-  String? _dialect;          // "najdi" | "janoubi" | "shamali" | "sharqawi"
+  String? _dialect;          // "najdi" | "janoubi" | "hijazi" | "sharqawi"
   bool _submitting = false;
   bool _checking = true;
 
@@ -288,7 +288,7 @@ class _DialectPicker extends StatelessWidget {
   static const _dialects = [
     ('najdi',    'نجدية',    'الرياض والقصيم'),
     ('janoubi',  'جنوبية',  'أبها وجازان'),
-    ('shamali',  'شمالية',  'حائل وتبوك'),
+    ('hijazi',   'حجازية',  'جدة ومكة والمدينة'),
     ('sharqawi', 'شرقاوية', 'الدمام والأحساء'),
   ];
 
