@@ -45,18 +45,15 @@ class DialectDetector {
     return s;
   }
 
-  // ── Shamali: Northern (Hail / Jouf / Tabuk) ──────────────────────────────
-  // Characteristic: greeting cluster "شبيك/شبيكي/شخبارك/شخباركي",
-  // and feminine enclitic "-كي" applied broadly regardless of addressee gender.
-  static final _rShamaliGreet =
-      RegExp(r'\b(شبيكي?|شخباركي?|شلونكي?|هلا\s+والله)\b');
-  static final _rShamaliKi =
-      RegExp(r'كي(?=\s|$|[،.؟!])');
-
-  double _scoreShamali(String t) {
+  // ── Hijazi: Western region (Jeddah / Makkah / Madinah) ─────────────────
+  // Characteristic: common Hijazi words such as "ايش", "دحين",
+  // "أبغى/تبغى", "كمان", and "مرة".
+  static final _rHijaziLex =
+    RegExp(r'\b(ايش|دحين|اشبك|ابغى|ابغا|تبغى|تبغا|كمان|مره|مرة)\b');
+  
+  double _scoreHijazi(String t) {
     double s = 0;
-    s += _rShamaliGreet.allMatches(t).length * 3.0;
-    s += _rShamaliKi.allMatches(t).length * 2.0;
+    s += _rHijaziLex.allMatches(t).length * 1.5;
     return s;
   }
 
@@ -88,7 +85,7 @@ class DialectDetector {
     final scores = <String, double>{
       'najdi':    _scoreNajdi(n),
       'janoubi':  _scoreJanoubi(n),
-      'shamali':  _scoreShamali(n),
+      'hijazi':  _scoreHizaji(n),
       'sharqawi': _scoreSharqawi(n),
     };
 
@@ -146,7 +143,7 @@ class DialectDetector {
 // ── Result type ──────────────────────────────────────────────────────────────
 
 class DialectResult {
-  /// One of: `'najdi'` | `'janoubi'` | `'shamali'` | `'sharqawi'`.
+  /// One of: `'najdi'` | `'janoubi'` | `'hijazi'` | `'sharqawi'`.
   final String dialect;
 
   /// Posterior probability of the winning class (0.0 – 1.0).
