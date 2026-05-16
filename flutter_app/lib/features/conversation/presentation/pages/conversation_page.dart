@@ -205,21 +205,21 @@ class _DialectBadge extends StatelessWidget {
   static const _labels = {
     'najdi':    'نجدي',
     'janoubi':  'جنوبي',
-    'shamali':  'شمالي',
+    'hijazi':  'حجازي',
     'sharqawi': 'شرقاوي',
   };
 
   static const _colors = {
     'najdi':    Color(0xFF00897B), // teal  — central region
     'janoubi':  Color(0xFFE65100), // deep orange — southern region
-    'shamali':  Color(0xFF6A1B9A), // purple — northern region
+    'hijazi':  Color(0xFF6A1B9A), // purple — hijaz region
     'sharqawi': Color(0xFF1565C0), // blue   — eastern region
   };
 
   static const _icons = {
     'najdi':    Icons.location_city_rounded,
     'janoubi':  Icons.terrain_rounded,
-    'shamali':  Icons.ac_unit_rounded,
+    'hijazi':  Icons.ac_unit_rounded,
     'sharqawi': Icons.water_rounded,
   };
 
