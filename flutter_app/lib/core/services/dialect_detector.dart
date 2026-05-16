@@ -82,7 +82,7 @@ class DialectDetector {
     final scores = <String, double>{
       'najdi':    _scoreNajdi(n),
       'janoubi':  _scoreJanoubi(n),
-      'hijazi':  _scoreHizaji(n),
+      'hijazi':  _scoreHijazi(n),
       'sharqawi': _scoreSharqawi(n),
     };
 
