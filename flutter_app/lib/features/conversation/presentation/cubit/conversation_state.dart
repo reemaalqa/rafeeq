@@ -16,7 +16,7 @@ class ConversationState extends Equatable {
   final String partialText;
 
   /// Dialect auto-detected from the user's accumulated speech.
-  /// One of: 'najdi' | 'janoubi' | 'shamali' | 'sharqawi' | null.
+  /// One of: 'najdi' | 'janoubi' | 'hijazi' | 'sharqawi' | null.
   final String? detectedDialect;
 
   /// When non-null, the UI should navigate to this named route.
