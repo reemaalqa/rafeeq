@@ -198,7 +198,7 @@ _DIALECT_LABELS = {
 # Najdi – Central (Riyadh / Qassim)
 # Suffix "هس/مس" on pronouns, confirmation "ايه", greeting "ابشر".
 _r_najdi_enc  = _re.compile(r"(?<=[كهم])س(?=\s|$|[،.؟!])")
-_r_najdi_lex  = _re.compile(r"\b(ابشر|ابشري|ايه(?!\s*والله)|شعليك|عساكم?|تسلمس?|شنو)\b")
+_r_najdi_lex  = _re.compile(r"\b(ابشر|ابشري|ايه(?!\s*والله)|شعليتس|عساكم?|وش)\b")
 
 # Janoubi – Southern (Abha / Jizan / Najran)
 # Suffix "كش/هش/مش", markers وينش، كيفش، علاش.
@@ -210,9 +210,8 @@ _r_janoubi_lex = _re.compile(r"\b(وينش|كيفش|شخبارش|شبيكش|لي
 _r_hijazi_lex = _re.compile(r"\b(ايش|دحين|اشبك|ابغى|ابغا|تبغى|تبغا|كمان|مره|مرة)\b")
 
 # Sharqawi – Eastern (Dammam / Ahsa / Qatif)
-# Suffix "كت/هت", filler "عاد", "إي/اي والله".
-_r_sharqawi_enc = _re.compile(r"(?<=[كهم])ت(?=\s|$|[،.؟!])")
-_r_sharqawi_lex = _re.compile(r"\b(عاد\b|اي\s+والله|إي\s+والله|وش\s+اخبارك|وينت|كيفت|شفيت)\b")
+# Common Eastern Saudi expressions: "شلونك", "وش أخبارك", "اي والله", and "عاد".
+_r_sharqawi_lex = _re.compile(r"\b(عاد\b|اي\s+والله|اي\s+والله|وش\s+اخبارك|وش\s+أخبارك|شلونك|هلا\s+والله)\b")
 
 _DIALECT_MIN_SIGNAL     = 1.5
 _DIALECT_MIN_CONFIDENCE = 0.45
@@ -224,7 +223,7 @@ def _dialect_scores(text: str) -> dict[str, float]:
         "najdi":    len(_r_najdi_enc.findall(n))  * 3.0 + len(_r_najdi_lex.findall(n))  * 1.5,
         "janoubi":  len(_r_janoubi_enc.findall(n)) * 3.0 + len(_r_janoubi_lex.findall(n)) * 1.5,
         "hijazi":   len(_r_hijazi_lex.findall(n)) * 1.5,
-        "sharqawi": len(_r_sharqawi_enc.findall(n)) * 3.0 + len(_r_sharqawi_lex.findall(n)) * 1.5,
+        "sharqawi": len(_r_sharqawi_lex.findall(n)) * 1.5,
     }
 
 
