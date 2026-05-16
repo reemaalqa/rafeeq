@@ -46,7 +46,7 @@ class RafeeqPrediction {
   /// Detection method used by the server: 'arabert' or 'keyword_fallback'.
   final String method;
 
-  /// Detected dialect — one of: 'najdi' | 'janoubi' | 'shamali' | 'sharqawi'.
+  /// Detected dialect — one of: 'najdi' | 'janoubi' | 'hijazi' | 'sharqawi'.
   /// Null when the API signal was too weak to commit.
   final String? dialect;
 
