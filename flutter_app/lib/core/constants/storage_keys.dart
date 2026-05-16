@@ -34,7 +34,7 @@ abstract class StorageKeys {
   static const String aiReplyLength = 'ai_reply_length';           // short|long
   static const String aiExplanationStyle = 'ai_explanation_style'; // simple|detailed
   static const String aiWantsExamples = 'ai_wants_examples';       // bool
-  static const String aiDialect = 'ai_dialect';                    // najdi|janoubi|shamali|sharqawi
+  static const String aiDialect = 'ai_dialect';                    // najdi|janoubi|hijazi|sharqawi
   static const String preferencesOnboarded = 'preferences_onboarded';
 
   // ── Settings ─────────────────────────────────────────────────────────────────
