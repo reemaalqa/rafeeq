@@ -56,18 +56,15 @@ class DialectDetector {
     s += _rHijaziLex.allMatches(t).length * 1.5;
     return s;
   }
-
+  
   // ── Sharqawi: Eastern (Dammam / Ahsa / Qatif) ───────────────────────────
-  // Characteristic: "كت"/"هت" enclitics (وينكت، كيفت، شفيت),
-  // filler "عاد", and "إي/اي والله".
-  static final _rSharqawiEnclitic =
-      RegExp(r'(?<=[كهم])ت(?=\s|$|[،.؟!])');
+  // Characteristic: common Eastern Saudi expressions such as "شلونك",
+  // "وش أخبارك", "اي والله", "عاد", and "هلا والله".
   static final _rSharqawiLex =
-      RegExp(r'\b(عاد\b|اي\s+والله|إي\s+والله|وش\s+اخبارك|وينت|كيفت|شفيت)\b');
-
+    RegExp(r'\b(عاد\b|اي\s+والله|إي\s+والله|وش\s+اخبارك|وش\s+أخبارك|شلونك|هلا\s+والله)\b');
+  
   double _scoreSharqawi(String t) {
     double s = 0;
-    s += _rSharqawiEnclitic.allMatches(t).length * 3.0;
     s += _rSharqawiLex.allMatches(t).length * 1.5;
     return s;
   }
