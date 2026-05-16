@@ -454,8 +454,8 @@ COLORS = {
 
 # in this project.  Used in titles, legends, and tables.
 MODEL_LABELS = {
-    'model1': 'Whisper + AraBERT',
-    'model2': 'Wav2Vec2 + CAMeL-BERT',
+    'model1': ' AraBERT',
+    'model2': ' CAMeL-BERT',
     
 }
 
