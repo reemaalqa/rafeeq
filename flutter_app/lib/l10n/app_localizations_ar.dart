@@ -12,10 +12,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appName => 'رفيق';
 
   @override
-  String get welcome => 'مرحباً';
+  String get welcome => 'مرحبًا';
 
   @override
-  String get welcomeMessage => 'مرحباً بك في رفيق، رفيقك';
+  String get welcomeMessage => 'مرحبًا بك في رفيق، رفيقك';
 
   @override
   String get login => 'تسجيل الدخول';
@@ -458,7 +458,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get contactsWillBeCalled =>
-      'سيتم الاتصال بالجهات بالترتيب وإرسال رسائل تلقائياً.';
+      'سيتم الاتصال بالجهات بالترتيب وإرسال رسائل تلقائيًّا.';
 
   @override
   String get noContactsConfigured =>
@@ -470,7 +470,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get callingForHelp => 'جاري الاتصال طلباً للمساعدة...';
+  String get callingForHelp => 'جاري الاتصال طلبًا للمساعدة...';
 
   @override
   String get smsSent => 'تم إرسال الرسالة';
@@ -661,7 +661,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get today => 'اليوم';
 
   @override
-  String get tomorrow => 'غداً';
+  String get tomorrow => 'غدًا';
 
   @override
   String get setReminder => 'ضبط التذكير';
@@ -673,7 +673,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get large => 'كبير';
 
   @override
-  String get welcomeToRafeeq => 'مرحباً بك في رفيق';
+  String get welcomeToRafeeq => 'مرحبًا بك في رفيق';
 
   @override
   String get yourCompanion => 'رفيقك';
@@ -691,7 +691,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get healthAndDiet => 'الصحة والغذاء';
 
   @override
-  String get permissionsRequired => 'الأذونات المطلوبة';
+  String get permissionsRequired => 'الصلاحيات المطلوبة';
 
   @override
   String get microphone => 'الميكروفون';
@@ -700,10 +700,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get location => 'الموقع';
 
   @override
-  String get allowPermissions => 'منح الأذونات';
+  String get allowPermissions => 'منح الصلاحيات';
 
   @override
-  String get youreAllSet => 'أنت جاهز تماماً!';
+  String get youreAllSet => 'أنت جاهز تمامًا!';
 
   @override
   String get getStarted => 'ابدأ الآن';
@@ -718,7 +718,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get forPrayerTimes => 'لأوقات الصلاة والأماكن القريبة';
 
   @override
-  String get rafeeqNeeds => 'يحتاج رفيق إلى الأذونات التالية للعمل بشكل صحيح:';
+  String get rafeeqNeeds => 'يحتاج رفيق إلى الصلاحيات التالية للعمل بشكل صحيح:';
 
   @override
   String get startUsing => 'ابدأ استخدام رفيق واستمتع بحياة يومية أذكى.';
