@@ -21,7 +21,7 @@ class DialectDetector {
   static final _rNajdiEnclitic =
       RegExp(r'(?<=[كهم])س(?=\s|$|[،.؟!])');
   static final _rNajdiLex =
-      RegExp(r'\b(ابشر|ابشري|ايه(?!\s*والله)|شعليك|عساكم?|تسلمس?|شنو|ها\b)\b');
+      RegExp(r'\b(ابشر|ابشري|ايه(?!\s*والله)|شعليتس|عساكم?|وش|ها\b)\b');
 
   double _scoreNajdi(String t) {
     double s = 0;
@@ -31,12 +31,12 @@ class DialectDetector {
   }
 
   // ── Janoubi: Southern (Abha / Jizan / Najran) ────────────────────────────
-  // Characteristic: "كش"/"هش" enclitics (وينكش، كيفكش، علاش),
+  // Characteristic: "ش" enclitics (وينش، كيفش، عليش),
   // and bare "ش" confirmation suffix.
   static final _rJanoubiEnclitic =
       RegExp(r'(?<=[كهم])ش(?=\s|$|[،.؟!])');
   static final _rJanoubiLex =
-      RegExp(r'\b(وينش|كيفش|شخبارش|شبيكش|ليش|علاش|ايش)\b');
+      RegExp(r'\b(وينش|كيفش|شخبارش|شبيش|ليش|عليش|ايش)\b');
 
   double _scoreJanoubi(String t) {
     double s = 0;
