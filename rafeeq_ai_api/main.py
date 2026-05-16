@@ -196,12 +196,12 @@ _DIALECT_LABELS = {
 }
 
 # Najdi – Central (Riyadh / Qassim)
-# Suffix "هس/مس" on pronouns, confirmation "ايه", greeting "ابشر".
+# Suffix "س" on pronouns, confirmation "ايه", greeting "ابشر".
 _r_najdi_enc  = _re.compile(r"(?<=[كهم])س(?=\s|$|[،.؟!])")
 _r_najdi_lex  = _re.compile(r"\b(ابشر|ابشري|ايه(?!\s*والله)|شعليتس|عساكم?|وش)\b")
 
 # Janoubi – Southern (Abha / Jizan / Najran)
-# Suffix "كش/هش/مش", markers وينش، كيفش، علاش.
+# Suffix "ش", markers وينش، كيفش، عليش.
 _r_janoubi_enc = _re.compile(r"(?<=[كهم])ش(?=\s|$|[،.؟!])")
 _r_janoubi_lex = _re.compile(r"\b(وينش|كيفش|شخبارش|شبيكش|ليش|علاش|ايش)\b")
 
