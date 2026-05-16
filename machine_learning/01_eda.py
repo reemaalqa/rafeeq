@@ -24,7 +24,6 @@ import matplotlib.patches as mpatches
 import seaborn as sns                
 
 # ── Arabic text shaping (optional) ─────────────────────────────────────────
-.
 try:
     import arabic_reshaper
     from bidi.algorithm import get_display
