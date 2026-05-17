@@ -9,6 +9,7 @@ class DietState extends Equatable {
   final DietPlan? dietPlan;
   final BmiResult? bmiResult;
   final List<String> dislikedFoods;
+  final List<String> allergies;
   final DietStatus status;
   final String? errorMessage;
   final bool needsProfileSetup;
@@ -17,6 +18,7 @@ class DietState extends Equatable {
     this.dietPlan,
     this.bmiResult,
     this.dislikedFoods = const [],
+    this.allergies = const [],
     this.status = DietStatus.initial,
     this.errorMessage,
     this.needsProfileSetup = false,
@@ -26,6 +28,7 @@ class DietState extends Equatable {
     DietPlan? dietPlan,
     BmiResult? bmiResult,
     List<String>? dislikedFoods,
+    List<String>? allergies,
     DietStatus? status,
     String? errorMessage,
     bool? needsProfileSetup,
@@ -34,6 +37,7 @@ class DietState extends Equatable {
       dietPlan: dietPlan ?? this.dietPlan,
       bmiResult: bmiResult ?? this.bmiResult,
       dislikedFoods: dislikedFoods ?? this.dislikedFoods,
+      allergies: allergies ?? this.allergies,
       status: status ?? this.status,
       errorMessage: errorMessage ?? this.errorMessage,
       needsProfileSetup: needsProfileSetup ?? this.needsProfileSetup,
@@ -41,5 +45,5 @@ class DietState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [dietPlan, bmiResult, dislikedFoods, status, errorMessage, needsProfileSetup];
+  List<Object?> get props => [dietPlan, bmiResult, dislikedFoods, allergies, status, errorMessage, needsProfileSetup];
 }
