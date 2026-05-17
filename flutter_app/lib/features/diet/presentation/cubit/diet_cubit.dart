@@ -49,6 +49,7 @@ class DietCubit extends Cubit<DietState> {
         bmiResult: bmi,
         dietPlan: plan,
         dislikedFoods: prefs,
+        allergies: allergies,
         needsProfileSetup: false,
       )),
     );
@@ -57,13 +58,32 @@ class DietCubit extends Cubit<DietState> {
   Future<void> toggleFoodPreference(String food) async {
     final isCurrentlyDisliked = state.dislikedFoods.contains(food);
     await _updatePreference(food, !isCurrentlyDisliked);
+
     final updated = List<String>.from(state.dislikedFoods);
     if (isCurrentlyDisliked) {
       updated.remove(food);
     } else {
       updated.add(food);
     }
+
     emit(state.copyWith(dislikedFoods: updated));
+
+    final bmi = state.bmiResult;
+    if (bmi == null) return;
+
+    final planResult = await _getDietPlan(
+      bmiResult: bmi,
+      dislikedFoods: updated,
+      allergies: state.allergies,
+    );
+    planResult.fold(
+      (f) => emit(state.copyWith(status: DietStatus.error, errorMessage: f.message)),
+      (plan) => emit(state.copyWith(
+        status: DietStatus.loaded,
+        dietPlan: plan,
+        dislikedFoods: updated,
+      )),
+    );
   }
 
   void markMealEaten(String mealId) {
