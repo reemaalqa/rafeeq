@@ -38,20 +38,48 @@ class DietPage extends StatelessWidget {
     AppState appState,
   ) async {
     List<String> allergies = const [];
+    double? heightCm = appState.heightCm;
+    double? weightKg = appState.weightKg;
+  
     try {
       final sp = await SharedPreferences.getInstance();
-      final raw = sp.getString(StorageKeys.userAllergies);
-      if (raw != null && raw.isNotEmpty) {
-        allergies = (jsonDecode(raw) as List).cast<String>();
+  
+      heightCm = sp.getDouble(StorageKeys.userHeightCm) ?? heightCm;
+      weightKg = sp.getDouble(StorageKeys.userWeightKg) ?? weightKg;
+  
+      final rawAllergies = sp.getString(StorageKeys.userAllergies);
+  
+      if (rawAllergies != null && rawAllergies.isNotEmpty) {
+        allergies = (jsonDecode(rawAllergies) as List).cast<String>();
+      } else {
+        final rawProfile = sp.getString(StorageKeys.userProfile);
+  
+        if (rawProfile != null && rawProfile.isNotEmpty) {
+          final profile = jsonDecode(rawProfile) as Map<String, dynamic>;
+          final rawProfileAllergies =
+              profile['allergies'] as List<dynamic>? ?? const [];
+  
+          allergies = rawProfileAllergies
+              .map((a) {
+                if (a is Map<String, dynamic>) {
+                  return a['name'] as String? ?? '';
+                }
+                return a.toString();
+              })
+              .where((name) => name.isNotEmpty)
+              .toList();
+        }
       }
-    } catch (_) {/* ignore malformed cache */}
+    } catch (_) {
+      /* ignore malformed cache */
+    }
+  
     await cubit.init(
-      heightCm: appState.heightCm,
-      weightKg: appState.weightKg,
+      heightCm: heightCm,
+      weightKg: weightKg,
       allergies: allergies,
     );
   }
-}
 
 class _DietView extends StatelessWidget {
   const _DietView();
@@ -104,7 +132,18 @@ class _DietView extends StatelessWidget {
                     ),
                     const SizedBox(height: AppTheme.spaceLG),
                     ElevatedButton.icon(
-                      onPressed: () => Navigator.pushNamed(context, '/profile-setup', arguments: 0),
+                      onPressed: () async {
+                        await Navigator.pushNamed(context, '/profile-setup', arguments: 0);
+                    
+                        if (!context.mounted) return;
+                    
+                        final appState = Provider.of<AppState>(context, listen: false);
+                    
+                        await DietPage._loadProfileAllergiesAndInit(
+                          context.read<DietCubit>(),
+                          appState,
+                        );
+                      },
                       icon: const Icon(Icons.edit),
                       label: Text(l10n.updateProfile),
                       style: ElevatedButton.styleFrom(minimumSize: const Size(double.infinity, 56)),
