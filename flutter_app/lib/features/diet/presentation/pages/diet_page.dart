@@ -80,6 +80,7 @@ class DietPage extends StatelessWidget {
       allergies: allergies,
     );
   }
+}
 
 class _DietView extends StatelessWidget {
   const _DietView();
