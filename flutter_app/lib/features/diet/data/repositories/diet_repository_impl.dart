@@ -38,8 +38,16 @@ class DietRepositoryImpl implements DietRepository {
     int rotationIndex = 0,
   }) async {
     final categoryKey = bmiResult.category.name; // e.g. "normal"
-    final dislikes = {...dislikedFoods.map((f) => f.toLowerCase()), ...allergies.map((a) => a.toLowerCase())};
-
+    final avoidedFoods = {...dislikedFoods, ...allergies};
+    final allergenTags = avoidedFoods
+        .map(normalizeAllergenTag)
+        .where((tag) => tag.isNotEmpty)
+        .toSet();
+    final blockedIngredientKeywords = {
+      ...dislikedFoods.map((f) => f.toLowerCase()),
+      ...allergyIngredientKeywords(avoidedFoods),
+    };
+    
     try {
       final suggestions = await _remote.getMealSuggestions(categoryKey);
       if (suggestions.isNotEmpty) {
@@ -56,30 +64,38 @@ class DietRepositoryImpl implements DietRepository {
         }
 
         bool passesAllergy(Map<String, dynamic> m) {
-          final ings = List<String>.from(m['ingredients_ar'] as List? ?? const []);
-          return !ings.any(
-            (i) => dislikes.any((d) => d.isNotEmpty && i.toLowerCase().contains(d)),
-          );
+          final ingredients = _readStringList(m, 'ingredients_ar', fallbackKey: 'ingredients');
+          final allergens = _readStringList(m, 'allergens')
+              .map(normalizeAllergenTag)
+              .toSet();
+
+          if (allergens.any(allergenTags.contains)) return false;
+          return !containsBlockedIngredient(ingredients, blockedIngredientKeywords);
         }
 
         final result = <Meal>[];
+        var skippedRequiredSlot = false;
         for (final slot in const [MealTime.breakfast, MealTime.lunch, MealTime.dinner, MealTime.snack]) {
           final slotMeals = bySlot[slot] ?? const <Map<String, dynamic>>[];
           if (slotMeals.isEmpty) continue;
           final compat = slotMeals.where(passesAllergy).toList();
-          final pool = compat.isNotEmpty ? compat : slotMeals;
-          final idx = ((rotationIndex + slot.hashCode.abs()) % pool.length).abs();
-          final m = pool[idx];
+          if (compat.isEmpty) {
+            if (slot != MealTime.snack) skippedRequiredSlot = true;
+            continue;
+          }
+          final idx = ((rotationIndex + slot.hashCode.abs()) % compat.length).abs();
+          final m = compat[idx];
+          final nameAr = m['name_ar'] as String? ?? m['name'] as String? ?? '';
           result.add(Meal(
             id: m['id'].toString(),
-            name: m['name_ar'] as String,
-            nameAr: m['name_ar'] as String,
-            ingredients: List<String>.from(m['ingredients_ar'] as List? ?? const []),
-            calories: (m['calories'] as num).toInt(),
+            name: nameAr,
+            nameAr: nameAr,
+            ingredients: _readStringList(m, 'ingredients_ar', fallbackKey: 'ingredients'),
+            calories: _readCalories(m),
             mealTime: slot,
           ));
         }
-        if (result.isNotEmpty) {
+        if (result.isNotEmpty && !skippedRequiredSlot) {
           return Right(DietPlan(meals: result, targetCalories: bmiResult.recommendedCalories));
         }
       }
@@ -101,6 +117,28 @@ class DietRepositoryImpl implements DietRepository {
     } catch (e) {
       return Left(ServerFailure('Diet plan generation failed: $e'));
     }
+  }
+
+    List<String> _readStringList(
+    Map<String, dynamic> source,
+    String key, {
+    String? fallbackKey,
+  }) {
+    final value = source[key] ?? (fallbackKey == null ? null : source[fallbackKey]);
+    if (value is List) return List<String>.from(value.map((e) => e.toString()));
+    return const [];
+  }
+
+  int _readCalories(Map<String, dynamic> meal) {
+    final directCalories = meal['calories'];
+    if (directCalories is num) return directCalories.toInt();
+
+    final nutrition = meal['nutrition'];
+    if (nutrition is Map && nutrition['calories'] is num) {
+      return (nutrition['calories'] as num).toInt();
+    }
+
+    return 0;
   }
 
   /// Remote first: returns food preference name keys; local fallback.
