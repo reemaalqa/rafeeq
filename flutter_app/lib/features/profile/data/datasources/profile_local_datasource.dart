@@ -54,3 +54,4 @@ class ProfileLocalDatasourceImpl implements ProfileLocalDatasource {
       throw CacheException(message: 'Failed to save profile');
     }
   }
+}
