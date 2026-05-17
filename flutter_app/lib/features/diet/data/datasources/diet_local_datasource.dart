@@ -78,18 +78,21 @@ class DietLocalDatasourceImpl implements DietLocalDatasource {
     final bmiKey = bmiResult.category.name; // underweight | normal | overweight | obese
 
     // Normalise user inputs so matching is case/diacritic-insensitive.
-    final allergenKeys = allergies.map(_allergenKey).where((s) => s.isNotEmpty).toSet();
+    final avoidedFoods = {...allergies, ...dislikedFoods};
+    final allergenKeys = avoidedFoods
+        .map(normalizeAllergenTag)
+        .where((s) => s.isNotEmpty)
+        .toSet();
     final dislikeKeywords = {
       ...dislikedFoods.map((f) => f.toLowerCase()),
       // Map allergen display names to ingredient substrings as a backup
       // for meals whose `allergens` tags miss a particular sensitivity.
-      for (final a in allergies)
-        ..._ingredientKeywordsForAllergen(a),
+      for (final a in avoidedFoods) ...ingredientKeywordsForAllergen(a),
     };
 
     bool compatible(_MealRecord m) {
       if (!m.suitableForBmi.contains(bmiKey)) return false;
-      if (m.allergens.any(allergenKeys.contains)) return false;
+      if (m.allergens.map(normalizeAllergenTag).any(allergenKeys.contains)) return false;
       if (m.ingredientsAr.any((ing) {
         final lower = ing.toLowerCase();
         return dislikeKeywords.any((k) => k.isNotEmpty && lower.contains(k));
@@ -110,12 +113,12 @@ class DietLocalDatasourceImpl implements DietLocalDatasource {
       final slotForBmi = slotAll.where((m) => m.suitableForBmi.contains(bmiKey)).toList();
       final pool = slotForBmi.isNotEmpty ? slotForBmi : slotAll;
       final compatiblePool = pool.where(compatible).toList();
-      final picks = compatiblePool.isNotEmpty ? compatiblePool : pool;
+      if (compatiblePool.isEmpty) continue;
       // Offset each slot so breakfast/lunch/dinner don't advance in lock-step
       // — keeps combinations fresh across calls.
       final slotOffset = slot.hashCode.abs();
-      final idx = ((rotationIndex + slotOffset) % picks.length).abs();
-      result.add(picks[idx].toMeal());
+      final idx = ((rotationIndex + slotOffset) % compatiblePool.length).abs();
+      result.add(compatiblePool[idx].toMeal());
     }
 
     return DietPlan(meals: result, targetCalories: bmiResult.recommendedCalories);
@@ -201,42 +204,62 @@ class _MealRecord {
 // Maps Arabic + English allergen display names (as used in the allergy chips)
 // to the canonical lowercase English tag stored in the JSON `allergens` array.
 
-const Map<String, String> _allergenNameToTag = {
+const Map<String, String> allergenNameToTag = {
   // English → tag
   'dairy': 'dairy', 'gluten': 'gluten', 'wheat': 'wheat', 'eggs': 'eggs',
-  'nuts': 'nuts', 'peanuts': 'peanuts', 'shellfish': 'shellfish', 'fish': 'fish',
+  'nuts': 'nuts', 'peanuts': 'peanuts', 'shellfish': 'shellfish', 'seafood': 'seafood', 'fish': 'fish',
   'sesame': 'sesame', 'sugar': 'sugar', 'soy': 'soy', 'spicy food': 'spicy',
   'spicy': 'spicy', 'caffeine': 'caffeine',
   // Arabic (l10n display names) → tag
   'ألبان': 'dairy', 'جلوتين': 'gluten', 'قمح': 'wheat',
   'بيض': 'eggs', 'مكسرات': 'nuts', 'فول سوداني': 'peanuts',
-  'محار': 'shellfish', 'سمك': 'fish', 'سمسم': 'sesame',
+  'محار': 'shellfish', 'مأكولات بحرية': 'seafood', 'مأكولات بحريه': 'seafood',
+  'بحريات': 'seafood', 'سي فود': 'seafood', 'سمك': 'fish', 'سمسم': 'sesame',
   'سكر': 'sugar', 'صويا': 'soy', 'طعام حار': 'spicy', 'كافيين': 'caffeine',
 };
 
-String _allergenKey(String displayName) {
-  final lower = displayName.trim().toLowerCase();
-  return _allergenNameToTag[lower] ?? _allergenNameToTag[displayName.trim()] ?? '';
+String normalizeAllergenTag(String displayName) {
+  final value = displayName.trim();
+  final lower = value.toLowerCase();
+  return allergenNameToTag[lower] ?? allergenNameToTag[value] ?? lower;
 }
 
 /// Kept as a safety net for recipes whose `allergens` array may be incomplete:
 /// also veto meals whose ingredient strings contain the allergen's keywords.
-const Map<String, Set<String>> _allergenIngredientKeywords = {
-  'dairy':     {'حليب', 'لبن', 'جبن', 'زبدة', 'سمن', 'قشطة', 'كريمة', 'لبنة'},
+const Map<String, Set<String>> allergenIngredientKeywords = {
+  'dairy':     {'حليب', 'لبن', 'جبن', 'زبدة', 'سمن', 'قشطة', 'كريمة', 'لبنة', 'زبادي'},
   'gluten':    {'قمح', 'جريش', 'عجين', 'دقيق', 'خبز', 'هريس', 'شعير', 'برغل', 'تميس', 'توست'},
   'wheat':     {'قمح', 'جريش', 'عجين', 'دقيق', 'خبز', 'هريس', 'برغل', 'تميس'},
   'eggs':      {'بيض', 'بيضة', 'بياض'},
-  'nuts':      {'لوز', 'جوز', 'فستق', 'بندق', 'كاجو'},
+  'nuts':      {'لوز', 'جوز', 'فستق', 'بندق', 'كاجو', 'مكسرات'},
   'peanuts':   {'فول سوداني'},
   'shellfish': {'روبيان', 'جمبري', 'كابوريا', 'بطلينوس'},
+  'seafood':   {'سمك', 'سمكة', 'تونة', 'هامور', 'فيليه', 'روبيان', 'جمبري', 'كابوريا', 'بطلينوس', 'مأكولات بحرية'},
   'fish':      {'سمك', 'سمكة', 'تونة', 'هامور', 'فيليه'},
   'sesame':    {'سمسم', 'طحينة', 'زعتر'},
   'sugar':     {'سكر', 'عسل', 'حلويات', 'شراب'},
   'spicy':     {'فلفل حار', 'شطة', 'هريسة'},
 };
 
-Iterable<String> _ingredientKeywordsForAllergen(String displayName) {
-  final tag = _allergenKey(displayName);
+Iterable<String> ingredientKeywordsForAllergen(String displayName) {
+  final tag = normalizeAllergenTag(displayName);
   if (tag.isEmpty) return const [];
-  return _allergenIngredientKeywords[tag] ?? const {};
+  return allergenIngredientKeywords[tag] ?? const {};
+}
+
+Set<String> allergyIngredientKeywords(Iterable<String> allergies) => {
+  for (final allergy in allergies) ...ingredientKeywordsForAllergen(allergy),
+};
+
+bool containsBlockedIngredient(Iterable<String> ingredients, Iterable<String> blockedKeywords) {
+  final keywords = blockedKeywords
+      .map((k) => k.trim().toLowerCase())
+      .where((k) => k.isNotEmpty)
+      .toSet();
+  if (keywords.isEmpty) return false;
+
+  return ingredients.any((ingredient) {
+    final lower = ingredient.toLowerCase();
+    return keywords.any((keyword) => lower.contains(keyword));
+  });
 }
