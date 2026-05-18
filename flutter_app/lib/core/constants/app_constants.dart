@@ -53,11 +53,6 @@ class AppConstants {
 
   // Emergency
   static const List<String> emergencyPhrases = [
-    'help',
-    'emergency',
-    'fell',
-    'pain',
-    'cant breathe',
     'مساعدة',
     'طوارئ',
     'سقطت',
