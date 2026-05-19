@@ -36,13 +36,14 @@ MODEL_LABEL = "AraBERT"
 MODEL_KEY   = "model1"
 RESULTS_PFX = os.path.join(RESULTS_DIR, "model1")
 
-random_seed = TRAINING_CONFIG["seed"]
-max_len     = TRAINING_CONFIG["max_len"]
-batch_size  = TRAINING_CONFIG["batch_size"]
-lr          = TRAINING_CONFIG["lr"]
-max_epochs  = TRAINING_CONFIG["max_epochs"]
 
-
+random_seed  = TRAINING_CONFIG["seed"]
+max_len      = TRAINING_CONFIG["max_len"]
+batch_size   = TRAINING_CONFIG["batch_size"]
+lr           = TRAINING_CONFIG["lr"]
+max_epochs   = TRAINING_CONFIG["max_epochs"]
+weight_decay = TRAINING_CONFIG["weight_decay"]
+warmup_ratio = TRAINING_CONFIG["warmup_ratio"]
 
 
 # data loading
@@ -114,14 +115,14 @@ def train_transformer(train_df, val_df, test_df, le):
 
     os.makedirs(MODEL1_DIR, exist_ok=True)
     # Training settings: optimizer, eval strategy, checkpointing
-    args = TrainingArguments(
+   args = TrainingArguments(
         output_dir=MODEL1_DIR,
         num_train_epochs=max_epochs,
         per_device_train_batch_size=batch_size,
         per_device_eval_batch_size=batch_size,
         learning_rate=lr,
-        weight_decay=TRAINING_CONFIG["weight_decay"],
-        warmup_ratio=TRAINING_CONFIG["warmup_ratio"],
+        weight_decay=weight_decay,
+        warmup_ratio=warmup_ratio,
         eval_strategy="epoch",
         save_strategy="epoch",
         load_best_model_at_end=True,
@@ -130,9 +131,7 @@ def train_transformer(train_df, val_df, test_df, le):
         logging_steps=20,
         report_to="none",
         no_cuda=not torch.cuda.is_available(),
-    )
-
-    history = {"train_loss": [], "val_loss": [], "train_acc": [], "val_acc": []}
+    )    history = {"train_loss": [], "val_loss": [], "train_acc": [], "val_acc": []}
 
     class _HistCB(TrainerCallback):
         # Record loss at each logging step
