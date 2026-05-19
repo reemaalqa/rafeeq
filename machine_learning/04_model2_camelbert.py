@@ -1,4 +1,3 @@
-
 import os
 import sys
 import json
@@ -35,13 +34,13 @@ MODEL_NAME  = "CAMeL-Lab/bert-base-arabic-camelbert-mix"
 MODEL_LABEL = "CAMeL-BERT"
 RESULTS_PFX = os.path.join(RESULTS_DIR, "model2")
 
-random_seed = TRAINING_CONFIG["seed"]
-max_len     = TRAINING_CONFIG["max_len"]
-batch_size  = TRAINING_CONFIG["batch_size"]
-lr          = TRAINING_CONFIG["lr"]
-max_epochs  = TRAINING_CONFIG["max_epochs"]
-
-
+random_seed  = TRAINING_CONFIG["seed"]
+max_len      = TRAINING_CONFIG["max_len"]
+batch_size   = TRAINING_CONFIG["batch_size"]
+lr           = TRAINING_CONFIG["lr"]
+max_epochs   = TRAINING_CONFIG["max_epochs"]
+weight_decay = TRAINING_CONFIG["weight_decay"]
+warmup_ratio = TRAINING_CONFIG["warmup_ratio"]
 
 
 # ── data ───────────────────────────────────────────────────────────────────
@@ -130,8 +129,8 @@ def train_transformer(train_df, val_df, test_df, le):
         per_device_train_batch_size=batch_size,
         per_device_eval_batch_size=batch_size,
         learning_rate=lr,
-        weight_decay=TRAINING_CONFIG["weight_decay"],
-        warmup_ratio=TRAINING_CONFIG["warmup_ratio"],
+        weight_decay=weight_decay,
+        warmup_ratio=warmup_ratio,
         eval_strategy="epoch",
         save_strategy="epoch",
         load_best_model_at_end=True,
@@ -234,7 +233,7 @@ def save_per_class_chart(per_class, model_label):
     fig, ax = plt.subplots(figsize=(16, 7))
     ax.bar(x - w, f1s,  w, label="F1",       color=COLORS["model1"], edgecolor="white")
     ax.bar(x,     prec, w, label="Precision", color=COLORS["model2"], edgecolor="white")
-    ax.bar(x + w, rec,  w, label="Recall",    color=COLORS["model3"], edgecolor="white")
+    ax.bar(x + w, rec,  w, label="Recall",    color=COLORS["baseline"], edgecolor="white")
     ax.set_xticks(x)
     ax.set_xticklabels(INTENT_CATEGORIES, rotation=35, ha="right", fontsize=10)
     ax.set_ylim(0, 1.15)
@@ -250,9 +249,6 @@ def save_per_class_chart(per_class, model_label):
     print(f"  [saved] {path}")
 
 
-
-
-
 # ── main ───────────────────────────────────────────────────────────────────
 
 def main():
@@ -260,13 +256,11 @@ def main():
     os.makedirs(RESULTS_DIR, exist_ok=True)
     os.makedirs(MODEL2_DIR,  exist_ok=True)
 
-    # Load data and encode labels
     print("Loading data …")
     train_df, val_df, test_df = load_data()
     le = encode_labels(train_df, val_df, test_df)
     print(f"  Train:{len(train_df)}  Val:{len(val_df)}  Test:{len(test_df)}")
 
-    # Train the model
     print(f"\nLoading HuggingFace model: {MODEL_NAME} …")
     result = train_transformer(train_df, val_df, test_df, le)
     y_true, y_pred, inf_ms, training_time, history, used_label = result
@@ -282,7 +276,6 @@ def main():
     print(f"  Recall    : {metrics['macro_recall']:.4f}")
     print(f"  Inf. time : {metrics['inference_time_ms']:.2f} ms/sample")
 
-    # Save metrics — used later by comparison and report scripts
     metrics_path = os.path.join(RESULTS_DIR, "model2_metrics.json")
     with open(metrics_path, "w", encoding="utf-8") as f:
         json.dump(metrics, f, ensure_ascii=False, indent=2)
