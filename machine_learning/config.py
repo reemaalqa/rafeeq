@@ -1,55 +1,37 @@
+import os
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# ── Paths ──────────────────────────────────────────────────────────────────
+BASE_DIR        = os.path.dirname(os.path.abspath(__file__))
+DATASET_PATH    = os.path.join(BASE_DIR, "dataset", "SauDial Dataset.csv")
+DATASET_ENCODING = "cp1256"  # Windows Arabic encoding
 
-# Path to the raw SauDial CSV (input data for the whole pipeline).
-DATASET_PATH = os.path.join(BASE_DIR, "dataset", "SauDial Dataset.csv")
+OUTPUTS_DIR = os.path.join(BASE_DIR, "outputs")
+EDA_DIR     = os.path.join(OUTPUTS_DIR, "eda")
+DATA_DIR    = os.path.join(OUTPUTS_DIR, "data")
+MODELS_DIR  = os.path.join(OUTPUTS_DIR, "models")
+RESULTS_DIR = os.path.join(OUTPUTS_DIR, "results")
 
-# Encoding of the SauDial source CSV (Windows Arabic codepage).
-# cp1256 is commonly used for Arabic on older Windows systems.
-DATASET_ENCODING = "cp1256"
-
-# Main outputs folder — all generated files (charts, models, reports)
-# will be saved under sub-directories of this location.
-OUTPUTS_DIR     = os.path.join(BASE_DIR, "outputs")
-# Sub-directories for each stage of the pipeline.
-EDA_DIR         = os.path.join(OUTPUTS_DIR, "eda")          
-DATA_DIR        = os.path.join(OUTPUTS_DIR, "data")         # Prepared train/val/test CSV files
-MODELS_DIR      = os.path.join(OUTPUTS_DIR, "models")       # Saved model weights
-
-
-# Standard 70 / 15 / 15 split file paths used by training scripts.
+# 70/15/15 split file paths
 TRAIN_PATH = os.path.join(DATA_DIR, "train.csv")
 VAL_PATH   = os.path.join(DATA_DIR, "val.csv")
 TEST_PATH  = os.path.join(DATA_DIR, "test.csv")
 
-# Per-model output folders (one folder per trained model).
-MODEL1_DIR = os.path.join(MODELS_DIR, "model1_arabert")    
-MODEL2_DIR = os.path.join(MODELS_DIR, "model2_camelbert") 
+# Per-model output folders
+MODEL1_DIR = os.path.join(MODELS_DIR, "model1_arabert")
+MODEL2_DIR = os.path.join(MODELS_DIR, "model2_camelbert")
 
-
-# JSON files where each training script writes its evaluation metrics
-# (accuracy, F1, confusion matrix, etc.).  These are later consumed by
-# the comparison and report scripts.
+# Evaluation metrics output files
 METRICS1_PATH = os.path.join(RESULTS_DIR, "model1_metrics.json")
 METRICS2_PATH = os.path.join(RESULTS_DIR, "model2_metrics.json")
 
 
-# Intent Categories
-
+# ── Intent Categories ──────────────────────────────────────────────────────
 INTENT_CATEGORIES = [
-    "emergency",
-    "prayer_time",
-    "medication",
-    "diet",
-    "reminders",
-    "quran",
-    "islamic_advice",
-    "locations",
-    "conversation",
-    "general",
+    "emergency", "prayer_time", "medication", "diet", "reminders",
+    "quran", "islamic_advice", "locations", "conversation", "general",
 ]
 
-# Arabic (human-readable) names for each intent, used in charts 
+# Arabic display names for charts
 INTENT_LABELS_AR = {
     "emergency":      "طوارئ",
     "prayer_time":    "أوقات الصلاة",
@@ -63,14 +45,10 @@ INTENT_LABELS_AR = {
     "general":        "عام",
 }
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Saudi Arabic Keyword Dictionaries (per intent)
-# Used for auto-labelling the SauDial dataset rows.
-# ─────────────────────────────────────────────────────────────────────────────
-
+# ── Keyword Dictionaries (used for auto-labelling SauDial) ────────────────
 INTENT_KEYWORDS = {
     "emergency": [
-        "نجدة", "ساعدني", "طحت", "وقعت", "إسعاف", "إسعاف", "مستشفى", "طوارئ",
+        "نجدة", "ساعدني", "طحت", "وقعت", "إسعاف", "مستشفى", "طوارئ",
         "وجع", "ألم", "ألم شديد", "مريض", "قلبي", "صدري", "ضيق تنفس", "اتصل",
         "اتصل بالإسعاف", "اتصل بالدكتور", "أغثني", "خذني للمستشفى", "حادث",
         "حريق", "خطر", "أنقذني", "فقدان وعي", "غشي عليه", "كسر", "جرح",
@@ -149,15 +127,7 @@ INTENT_KEYWORDS = {
     ],
 }
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Synthetic command examples per intent (Saudi Arabic dialect)
-# ─────────────────────────────────────────────────────────────────────────────
-# Hand-crafted example utterances per intent, written in authentic
-# Saudi Arabic dialect.  The preprocessing step augments these with
-# prefixes/suffixes ("رفيق", "من فضلك", ...) to produce a large,
-# balanced training corpus even when the real SauDial data is scarce
-# for certain intents.
-
+# ── Synthetic Saudi Arabic utterances (used to augment training data) ──────
 SYNTHETIC_COMMANDS = {
     "emergency": [
         "ساعدني", "طحت ما أقدر أقوم", "دق على الاسعاف",
@@ -167,7 +137,7 @@ SYNTHETIC_COMMANDS = {
         "عندي حادث", "فقدت وعيي", "نزيف ما يوقف", "جتني ضربة شمس",
         "ما أحس بنص جسمي", "معد اقدر اشوف بعيني", "ازهم على الإسعاف على طول",
         " ضربتني الكهرباء", " بلعت حبه بالغلط ", "تسمم من الاكل ",
-        " البزر بلع شي", "إغماء مفاجئ","احس بضيقه بصدري",
+        " البزر بلع شي", "إغماء مفاجئ", "احس بضيقه بصدري",
         "راسي قاعد يدور بي", "دق على ولدي سكري نازل",
         "احتاج اسعاف يشيلني للمستشفى", "معدتي شابه علي ",
         "يدي تصب دم", "كل جسمي يرتجف", "معدتي قاعده توجعني",
@@ -203,7 +173,7 @@ SYNTHETIC_COMMANDS = {
         "وقت دواي", "خذ حبوبي", "ذكرني بالدواء", "دواء السكر",
         "دواء الضغط متى آخذه", " أخذت حبوبي اليوم",
         "حبوبي اخذها قبل الأكل ولا بعده", "كم جرعة آخذ",
-        "خلص دواي", "محتاج أشتري دواء", 
+        "خلص دواي", "محتاج أشتري دواء",
         "الدواء هذا إيش يسوي", "ذا العلاج  مناسب لي",
         "دواء ضد الحموضة", "مسكن لي الوجع "
         "جدول أدويتي اليوم", "ناسي أخذ الدواء الصبح",
@@ -338,7 +308,7 @@ SYNTHETIC_COMMANDS = {
         "طبيب الأطفال وين", "وين اقرب عيادة دكتور نفسي",
         "ناد صحي مناسب للكبار", "وين اقرب مسجد تحفيظ",
         "حديقة قريبة", "وين أمشي بأمان",
-        "أقرب مركز شرطة", 
+        "أقرب مركز شرطة",
     ],
     "conversation": [
         "قولي قصة", "سولفلي", "نكتة", "كلمني",
@@ -349,15 +319,15 @@ SYNTHETIC_COMMANDS = {
         "قولي معلومه كويسه", "قولي شعر",
         "علومك اليوم", "بقولك سالفه صارت لي اليوم",
         "قول ميدي قصه عن الانبياء", "قولي قصيده",
-        "قولي سواليف اقولها لعيالي", "احس اني دايم لحالي", 
+        "قولي سواليف اقولها لعيالي", "احس اني دايم لحالي",
         "طفشان سولف معي", "احس اني طفشان",
         "ابغى أضحك", "اشرح لي المشكلة",
         "قولي شيء يريحني", "قولي كلام يوسع صدري",
         "مير كلمني عن نفسك", "عطني من سواليفك",
-        "كيف حالك"
+        "كيف حالك",
     ],
     "general": [
-        "مرحبا", "هلا", "السلام عليكم", 
+        "مرحبا", "هلا", "السلام عليكم",
         "شكراً", "ايش تسوي",
         "وش تعرف", "من أنت", "إيش اسمك",
         "ما اسمك", "أهلاً وسهلاً",
@@ -375,7 +345,7 @@ SYNTHETIC_COMMANDS = {
         "تفهم العامية السعودية", "تكلم بالعربي",
         "ابغى اتكلم معك بالعربي", "قول شيء بالعربي",
         "عربي ولا إنجليزي", "ترجم لي",
-        "إيش معنى هذه الكلمة", 
+        "إيش معنى هذه الكلمة",
         "الوقت الحين كم", "اليوم كم",
         "تاريخ اليوم", "اليوم إيش",
         "درجة الحرارة اليوم", "الجو كيف",
@@ -385,93 +355,45 @@ SYNTHETIC_COMMANDS = {
     ],
 }
 
-# ─────────────────────────────────────────────────────────────────────────────
-# ASR Published Benchmark Metrics
-# ─────────────────────────────────────────────────────────────────────────────
-# Published performance numbers for the three ASR models used in the
-# three pipelines.  Since training full ASR models is out of scope,
-# we use these reference values (from the respective papers) in the
-# comparison and report sections.
-#   WER  = Word Error Rate (%) — lower is better
-#   CER  = Character Error Rate (%) — lower is better
-#   RTF  = Real-Time Factor (ratio of processing to audio time)
-#   model_size_mb = approximate on-disk footprint
-#   gpu_memory_gb = approximate runtime VRAM requirement
-
+# ── ASR Benchmarks (from published papers) ────────────────────────────────
 ASR_BENCHMARKS = {
     'whisper': {
-        'wer': 8.5,
-        'cer': 4.2,
-        'rtf': 0.12,
+        'wer': 8.5,            # Word Error Rate (lower is better)
+        'cer': 4.2,            # Character Error Rate
+        'rtf': 0.12,           # Real-Time Factor
         'model_size_mb': 1550,
         'gpu_memory_gb': 3.2,
     },
 }
 
-# Human-readable names for the ASR backbones (used in chart legends).
 ASR_MODEL_NAMES = {
-    'whisper':    'Whisper (OpenAI)',
-   
+    'whisper': 'Whisper (OpenAI)',
 }
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Training Hyperparameters
-# ─────────────────────────────────────────────────────────────────────────────
-# Shared training settings for all NLU models.  Keeping them in one
-# dict guarantees the three models are compared fairly.
-#   batch_size    : number of samples per gradient step
-#   max_epochs    : total passes over the training set
-#   lr            : learning rate (AdamW optimizer)
-#   max_len       : maximum token length fed to BERT-style models
-#   seed          : random seed for reproducibility
-#   warmup_ratio  : fraction of steps to warm up the learning rate
-#   weight_decay  : L2 regularisation strength
-
+# ── Training Hyperparameters ───────────────────────────────────────────────
 TRAINING_CONFIG = {
-    'batch_size':  16,
-    'max_epochs':  10,
-    'lr':          2e-5,
-    'max_len':     128,
-    'seed':        42,
-    'warmup_ratio': 0.1,
-    'weight_decay': 0.01,
+    'batch_size':   16,     # samples per gradient step
+    'max_epochs':   10,     # passes over the full training set
+    'lr':           2e-5,   # learning rate (AdamW)
+    'max_len':      128,    # max token length for BERT models
+    'seed':         42,     # fixed seed for reproducibility
+    'warmup_ratio': 0.1,    # fraction of steps for lr warmup
+    'weight_decay': 0.01,   # L2 regularisation (prevents overfitting)
 }
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Visualization
-# ─────────────────────────────────────────────────────────────────────────────
-# A consistent colour palette used across every chart so the same model
-# is always drawn in the same colour.  This makes the final report
-# visually coherent.
-
+# ── Visualization Settings ─────────────────────────────────────────────────
 COLORS = {
-    'model1':   '#2E7D32',   # Deep green  —  AraBERT
-    'model2':   '#1976D2',   # Deep blue   — CAMeL-BERT
-    'baseline': '#757575',   # Grey        — baseline reference
+    'model1':   '#2E7D32',  # green  — AraBERT
+    'model2':   '#1976D2',  # blue   — CAMeL-BERT
+    'baseline': '#757575',  # grey   — baseline reference
 }
 
-
-# in this project.  Used in titles, legends, and tables.
 MODEL_LABELS = {
-    'model1': ' AraBERT',
-    'model2': ' CAMeL-BERT',
-    
+    'model1': 'AraBERT',
+    'model2': 'CAMeL-BERT',
 }
 
-# Chart resolution (DPI) and default matplotlib style.
-CHART_DPI    = 150
-CHART_STYLE  = 'seaborn-v0_8-whitegrid'
+CHART_DPI   = 150
+CHART_STYLE = 'seaborn-v0_8-whitegrid'
 
-# The four Saudi dialects used throughout the project.
-DIALECTS = ['Najdi', 'Hijazi', 'Eastern', 'Janoubi/Southern']
 
-# Weights used to compute a single "composite score" per pipeline.
-# This balances raw accuracy against inference speed, dialect coverage,
-# and resource efficiency so that both quality and practicality are
-# taken into account in the final recommendation.
-COMPOSITE_WEIGHTS = {
-    'accuracy':   0.40,  
-    'speed':      0.30,  
-    'dialect':    0.20,  
-    'resource':   0.10,
-}
